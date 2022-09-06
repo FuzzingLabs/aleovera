@@ -1,7 +1,7 @@
 from enum import Enum, auto
 
 
-class opcode(Enum):
+class Opcode(Enum):
     Abs = 0
     AbsWrapped = auto()
     Add = auto()
@@ -114,10 +114,8 @@ class instruction:
         return res
 
 
-    def read_function_in_in_regout(self, opcode_name):
+    def read_function_in_in_regout(self, opcode):
         operands = []
-
-        print(self.bytecodes)
 
         for _ in range(2):
             op_type = Operand(int.from_bytes(self.bytecodes[:1], "little"))
@@ -127,8 +125,6 @@ class instruction:
                 self.bytecodes = self.bytecodes[2:]
                 value = self.read_literal(literal_type)
                 operands.append("{}{}".format(value, literal_type.name))
-
-
 
             elif op_type == Operand.Register:
                 self.bytecodes = self.bytecodes[1:] # Skip an unsed byte for registers
@@ -144,16 +140,16 @@ class instruction:
         operands.append("r" + str(register))
         self.bytecodes = self.bytecodes[1:]
         print(
-            f"{opcode_name} {operands[0]} {operands[1]} into {operands[2]}"
+            f"{opcode.name} {operands[0]} {operands[1]} into {operands[2]}"
         )
 
     def read_function_instructions(self):
         index = int.from_bytes(self.bytecodes[:2], "little")
         self.bytecodes = self.bytecodes[2:]
-        opcode_name = opcode(index).name
+        opcode = Opcode(index)
         
         # Need to make lists of function using the same pattern as xor (input1, input2, output) to dont decompile wrongly
-        self.read_function_in_in_regout(opcode_name)
+        self.read_function_in_in_regout(opcode)
 
 
     def disassemble_instruction(self, bytes):
