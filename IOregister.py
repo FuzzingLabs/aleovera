@@ -1,8 +1,9 @@
 from valueType import valueType
 
 
-class input:
-    def __init__(self) -> None:
+class IOregister:
+    def __init__(self, IO_type) -> None:
+        self.IO_type = IO_type
         self.bytecodes = None
         self.register_variant = None
         self.register_locator = None
@@ -28,7 +29,7 @@ class input:
             self.bytecodes = self.bytecodes[8:]
             return 64
 
-    def disassemble_input(self, bytes):
+    def disassemble_IOregister(self, bytes):
         # print(self.bytecodes)
         self.bytecodes = bytes
         self.register_variant = self.bytecodes[0]
@@ -50,7 +51,7 @@ class input:
         value_type = valueType()
         value_type.read_value_type(component=self)
         print(
-            f"input r{self.register_locator} as u{str(self.register_locator)}.{value_type.get_type(component=self)}"
+            f"{self.IO_type} r{self.register_locator} as {self.valueType_literal}.{value_type.get_type(component=self)}"
         )
         # print(self.identifiers)
         rest_of_bytecodes = self.bytecodes

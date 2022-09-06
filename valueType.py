@@ -2,6 +2,41 @@ from enum import Enum, auto
 import enum
 
 
+class LiteralType(Enum):
+    # The Aleo address type.
+    Address = 0
+    # The boolean type.
+    Boolean = auto()
+    # The field type (base field).
+    Field = auto()
+    # The group type (affine).
+    Group = auto()
+    # The 8-bit signed integer type.
+    I8 = auto()
+    # The 16-bit signed integer type.
+    I16 = auto()
+    # The 32-bit signed integer type.
+    I32 = auto()
+    # The 64-bit signed integer type.
+    I64 = auto()
+    # The 128-bit signed integer type.
+    I128 = auto()
+    # The 8-bit unsigned integer type.
+    U8 = auto()
+    # The 16-bit unsigned integer type.
+    U16 = auto()
+    # The 32-bit unsigned integer type.
+    U32 = auto()
+    # The 64-bit unsigned integer type.
+    U64 = auto()
+    # The 128-bit unsigned integer type.
+    U128 = auto()
+    # The scalar type (scalar field).
+    Scalar = auto()
+    # The string type.
+    String = auto()
+
+
 class valueType_name(Enum):
     constant = 0
     public = auto()
@@ -17,6 +52,7 @@ class valueType:
     def read_plaintext_literal(self, component):
         res = component.bytecodes[:2]
         component.bytecodes = component.bytecodes[2:]
+        res = LiteralType(int.from_bytes(res, "little")).name
         return res
 
     def read_plaintext_identifier(self, component):
