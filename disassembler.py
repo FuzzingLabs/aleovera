@@ -45,8 +45,8 @@ class aleodisassembler:
         self.number_components = int.from_bytes(self.bytecodes[:2], "little")
         self.bytecodes = self.bytecodes[2:]
 
-    def read_function(self):
-        new_function = function()
+    def read_function(self, type):
+        new_function = function(type=type)
         self.bytecodes = new_function.disassemble_function(self.bytecodes)
         self.functions.append(new_function)
 
@@ -74,10 +74,11 @@ class aleodisassembler:
                 print("---record detected---")
                 self.read_record()
             elif type == 3:
-                print(type)
+                print("---closure detected---")
+                self.read_function("closure")
             elif type == 4:
                 print("---function detected---")
-                self.read_function()
+                self.read_function("function")
             else:
                 print("type does not exist : ", type)
             print("")

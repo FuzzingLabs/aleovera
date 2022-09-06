@@ -3,8 +3,9 @@ from instruction import instruction
 
 
 class function:
-    def __init__(self) -> None:
+    def __init__(self, type) -> None:
         # bytecodes contains the full bytecodes at the beginning, and is replaced by the bytecodes of the function only after the disassembly of this function
+        self.type = type
         self.bytecodes = None
         self.identifier = None
         self.number_inputs = None
@@ -43,22 +44,22 @@ class function:
     def disassemble_function(self, bytes):
         self.bytecodes = bytes
         self.identifier = self.read_function_identifier()
-        print("func name : ", self.identifier)
+        print(f"{self.type} {self.identifier} : ")
         ###inputs
         self.number_inputs = self.read_function_number_IOregister()
+        print("\n---Inputs detected---")
         print("number of inputs : ", self.number_inputs)
-        print("---Inputs detected---")
         for i in range(self.number_inputs):
             self.read_IOregister("input")
         ###instructions
         self.number_instructions = self.read_function_number_instructions()
-        print("---Instructions detected---")
+        print("\n---Instructions detected---")
         for i in range(self.number_instructions):
             self.read_instructions()
 
         self.number_outputs = self.read_function_number_IOregister()
+        print("\n---Outputs detected---")
         print("number of outputs : ", self.number_outputs)
-        print("---Outputs detected---")
         for i in range(self.number_outputs):
             self.read_IOregister("output")
         rest_of_bytecodes = self.bytecodes
