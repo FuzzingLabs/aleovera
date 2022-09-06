@@ -1,4 +1,5 @@
 from function import function
+from record import record
 
 
 class aleodisassembler:
@@ -11,6 +12,7 @@ class aleodisassembler:
         self.imports = []
         self.number_components = None
         self.functions = []
+        self.records = []
         print("bytecodes : ", self.bytecodes)
 
     def read_version(self):
@@ -47,6 +49,11 @@ class aleodisassembler:
         self.bytecodes = new_function.disassemble_function(self.bytecodes)
         self.functions.append(new_function)
 
+    def read_record(self):
+        new_record = record()
+        self.bytecodes = new_record.disassemble_record(self.bytecodes)
+        self.records.append(new_record)
+
     def read_components(self):
         for i in range(self.number_components):
             type = self.bytecodes[0]
@@ -56,11 +63,12 @@ class aleodisassembler:
             elif type == 1:
                 print(type)
             elif type == 2:
-                print(type)
+                print("---record detected---")
+                self.read_record()
             elif type == 3:
                 print(type)
             elif type == 4:
-                print(" ---function detected---")
+                print("---function detected---")
                 self.read_function()
             else:
                 print("type does not exist : ", type)

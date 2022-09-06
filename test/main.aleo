@@ -1,6 +1,11 @@
 // The 'test.aleo' program.
 program test.aleo;
 
+record token:
+    owner as address.private;
+    gates as u64.private;
+    amount as u64.private;
+    
 function hello:
     input r0 as u16.public;
     input r1 as u16.private;
