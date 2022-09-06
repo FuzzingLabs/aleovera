@@ -55,6 +55,7 @@ class function:
         print("---Instructions detected---")
         for i in range(self.number_instructions):
             self.read_instructions()
+
         self.number_outputs = self.read_function_number_IOregister()
         print("number of outputs : ", self.number_outputs)
         print("---Outputs detected---")

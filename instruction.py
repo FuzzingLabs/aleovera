@@ -110,9 +110,25 @@ class instruction:
         elif type == Literal.i8 or type == Literal.u8:
             res = int.from_bytes(self.bytecodes[:1], "little")
             self.bytecodes = self.bytecodes[1:]
-        
+
         return res
 
+    def read_register(self):
+        content_type = int.from_bytes(self.bytecodes[:1], "little") # 0 if immediate, 1 if its like r0.zzz.bbb ...
+        self.bytecodes = self.bytecodes[1:]
+        register = int.from_bytes(self.bytecodes[:1], "little")
+        self.bytecodes = self.bytecodes[1:]
+        line = f"r{register}"
+        if (content_type == 1):
+            number_of_string = int.from_bytes(self.bytecodes[:2], "little")
+            self.bytecodes = self.bytecodes[2:]
+            for _ in range(number_of_string):
+                size_of_string = int.from_bytes(self.bytecodes[:1], "little")
+                self.bytecodes = self.bytecodes[1:]
+                string = self.bytecodes[:size_of_string].decode("ascii")
+                self.bytecodes = self.bytecodes[size_of_string:]
+                line += f".{string}"
+        return line
 
     def read_function_in_in_regout(self, opcode):
         operands = []
@@ -127,10 +143,8 @@ class instruction:
                 operands.append("{}{}".format(value, literal_type.name))
 
             elif op_type == Operand.Register:
-                self.bytecodes = self.bytecodes[1:] # Skip an unsed byte for registers
-                register = int.from_bytes(self.bytecodes[:1], "little")
-                operands.append("r{}".format(register))
-                self.bytecodes = self.bytecodes[1:]
+                line = self.read_register()
+                operands.append(line)
 
 
         unk = self.bytecodes[0]
