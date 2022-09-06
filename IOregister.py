@@ -42,8 +42,8 @@ class IOregister:
             # print("register identifier : ", num_identifiers)
             self.bytecodes = self.bytecodes[2:]
             for i in range(num_identifiers):
-                self.identifiers.append(int.from_bytes(self.bytecodes[:2], "little"))
-                self.bytecodes = self.bytecodes[2:]
+                self.identifiers.append(self.bytecodes[0])
+                self.bytecodes = self.bytecodes[1:]
             # print("register identifiers : ", self.identifiers)
         elif self.register_variant != 0:
             print("error register_variant")
