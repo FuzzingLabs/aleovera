@@ -40,7 +40,6 @@ class function:
         self.bytecodes = new_instruction.disassemble_instruction(self.bytecodes)
         self.instructions.append(new_instruction)
 
-
     def disassemble_function(self, bytes):
         self.bytecodes = bytes
         self.identifier = self.read_function_identifier()
@@ -53,9 +52,9 @@ class function:
             self.read_IOregister("input")
         ###instructions
         self.number_instructions = self.read_function_number_instructions()
+        print("---Instructions detected---")
         for i in range(self.number_instructions):
             self.read_instructions()
-        self.bytecodes = self.bytecodes[20:]
         self.number_outputs = self.read_function_number_IOregister()
         print("number of outputs : ", self.number_outputs)
         print("---Outputs detected---")
