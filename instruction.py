@@ -1,3 +1,4 @@
+from dis import Bytecode
 from enum import Enum, auto
 
 
@@ -64,12 +65,34 @@ class instruction:
     def __init__(self) -> None:
         self.bytecodes = None
 
+    def read_function_regin_regin_regout(self, opcode_name):
+        operands = []
+
+        for _ in range(2):
+            op_type = int.from_bytes(self.bytecodes[:2], "little")
+            self.bytecodes = self.bytecodes[2:]
+            if op_type != 1:
+                print(f"TODO opcode handling for opcode: {opcode_name}")
+            else:
+                operands.append(self.bytecodes[0])
+                self.bytecodes = self.bytecodes[1:]
+        unk = self.bytecodes[0]
+        self.bytecodes = self.bytecodes[1:]
+
+        operands.append(self.bytecodes[0])
+        self.bytecodes = self.bytecodes[1:]
+        print(
+            f"{opcode_name} r{operands[0]} r{operands[1]} into r{operands[2]}"
+        )
+
     def read_function_instructions(self):
         index = int.from_bytes(self.bytecodes[:2], "little")
         self.bytecodes = self.bytecodes[2:]
         opcode_name = opcode(index).name
-        print(opcode_name)
-        print(self.bytecodes)
+        
+        # Need to make lists of function using the same pattern as xor (input1, input2, output) to dont decompile wrongly
+        self.read_function_regin_regin_regout(opcode_name)
+
 
     def disassemble_instruction(self, bytes):
         self.bytecodes = bytes
