@@ -1,5 +1,6 @@
 from function import function
 from record import record
+from interface import interface
 
 
 class aleodisassembler:
@@ -54,14 +55,21 @@ class aleodisassembler:
         self.bytecodes = new_record.disassemble_record(self.bytecodes)
         self.records.append(new_record)
 
+    def read_interface(self):
+        new_interface = interface()
+        self.bytecodes = new_interface.disassemble_interface(self.bytecodes)
+        self.records.append(new_interface)
+
     def read_components(self):
+        print("")
         for i in range(self.number_components):
             type = self.bytecodes[0]
             self.bytecodes = self.bytecodes[1:]
             if type == 0:
                 print(type)
             elif type == 1:
-                print(type)
+                print("---interface detected---")
+                self.read_interface()
             elif type == 2:
                 print("---record detected---")
                 self.read_record()
@@ -72,6 +80,7 @@ class aleodisassembler:
                 self.read_function()
             else:
                 print("type does not exist : ", type)
+            print("")
 
     def disassemble(self):
         self.read_version()

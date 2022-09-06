@@ -56,9 +56,12 @@ class valueType:
         return res
 
     def read_plaintext_identifier(self, component):
-        res = component.bytecodes[0]
+        # print(component.bytecodes)
+        length = component.bytecodes[0]
         component.bytecodes = component.bytecodes[1:]
-        return res
+        res = component.bytecodes[:length]
+        component.bytecodes = component.bytecodes[length:]
+        return res.decode("utf-8")
 
     def read_valueType_plaintext(self, component):
         variant = component.bytecodes[0]

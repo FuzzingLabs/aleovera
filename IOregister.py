@@ -30,8 +30,8 @@ class IOregister:
             return 64
 
     def disassemble_IOregister(self, bytes):
-        # print(self.bytecodes)
         self.bytecodes = bytes
+        # print(self.bytecodes)
         self.register_variant = self.bytecodes[0]
         self.bytecodes = self.bytecodes[1:]
         self.register_locator = self.read_variable_length_integer()
@@ -50,9 +50,14 @@ class IOregister:
         ### get valueTYpe
         value_type = valueType()
         value_type.read_value_type(component=self)
-        print(
-            f"{self.IO_type} r{self.register_locator} as {self.valueType_literal}.{value_type.get_type(component=self)}"
-        )
+        if self.valueType_literal != None:
+            print(
+                f"{self.IO_type} r{self.register_locator} as {self.valueType_literal}.{value_type.get_type(component=self)}"
+            )
+        elif self.valueType_identifier != None:
+            print(
+                f"{self.IO_type} r{self.register_locator} as {self.valueType_identifier}.{value_type.get_type(component=self)}"
+            )
         # print(self.identifiers)
         rest_of_bytecodes = self.bytecodes
         self.bytecodes = bytes[: len(bytes) - len(rest_of_bytecodes)]
