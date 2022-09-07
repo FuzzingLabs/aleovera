@@ -60,7 +60,6 @@ class Opcode(Enum):
     Xor = auto()
 
 
-<<<<<<< HEAD
 UNARY = [Opcode.Abs, Opcode.AbsWrapped, Opcode.Double, Opcode.Inv, Opcode.Neg, Opcode.Not, Opcode.Square,
         Opcode.SquareRoot, Opcode.HashBHP256, Opcode.HashBHP512, Opcode.HashBHP768, Opcode.HashBHP1024,
         Opcode.HashPED64, Opcode.HashPED128, Opcode.HashPSD2, Opcode.HashPSD4, Opcode.HashPSD8]
@@ -73,10 +72,6 @@ BINARY = [Opcode.Add, Opcode.AddWrapped, Opcode.Sub, Opcode.SubWrapped, Opcode.M
         Opcode.CommitBHP1024, Opcode.CommitPED64, Opcode.CommitPED128]
 
 ASSERT = [Opcode.AssertEq, Opcode.AssertNeq]
-=======
-VARIADIC = [Opcode.Cast]
-
->>>>>>> 6bb32241eacbd7fe6b916829ae96e502eaec30e9
 
 class Operand(Enum):
     Literal = 0
@@ -212,16 +207,7 @@ class instruction:
         self.bytecodes = self.bytecodes[size_of_string:]
         output.append(line)
 
-<<<<<<< HEAD
-        print(
-            f"{opcode.name} {operands} into {output[0]} as {output[1]}"
-        )
-
-    def read_cast_instruction(self):
-        return self.read_variadic_instruction(Opcode.Cast)
-=======
         print(f"{opcode.name} {operands} into {output[0]} as {output[1]}")
->>>>>>> 6bb32241eacbd7fe6b916829ae96e502eaec30e9
 
     def read_function_instructions(self):
         index = int.from_bytes(self.bytecodes[:2], "little")
