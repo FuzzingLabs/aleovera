@@ -1,5 +1,6 @@
 from IOregister import IOregister
 from instruction import instruction
+from finalize import finalize
 
 
 class function:
@@ -13,6 +14,7 @@ class function:
         self.number_instructions = None
         self.instructions = []
         self.number_outputs = None
+        self.finalizes = []
 
     def read_function_identifier(self):
         len_identifier = self.bytecodes[0]
@@ -42,7 +44,9 @@ class function:
         self.instructions.append(new_instruction)
 
     def read_finalize(self):
-        print("todo")
+        new_finalize = finalize()
+        self.bytecodes = new_finalize.disassemble_finalize(self.bytecodes)
+        self.finalizes.append(new_finalize)
 
     def disassemble_function(self, bytes):
         self.bytecodes = bytes
@@ -70,6 +74,7 @@ class function:
             is_finalize = self.bytecodes[0]
             self.bytecodes = self.bytecodes[1:]
             if is_finalize == 1:
+                print("\n---Finalize detected---")
                 self.read_finalize()
         rest_of_bytecodes = self.bytecodes
         self.bytecodes = bytes[: len(bytes) - len(rest_of_bytecodes)]

@@ -1,0 +1,10 @@
+{
+    "program": "finalize.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkpJ3vhVZUeQjw6QtQWirnpdwZ4ezEyfzzGxK5Bg1XAPE5K",
+        "address": "aleo1q95yxyesfgh3vqr45ls6yd0pqgt8z2s3wxwx53hpajh3zfsxpyrsv0vxll"
+    },
+    "license": "MIT"
+}
