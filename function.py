@@ -66,7 +66,7 @@ class function:
         for i in range(self.number_outputs):
             self.read_IOregister("output")
         ###finalize
-        if self.type == "function":
+        if self.type == "function" and len(self.bytecodes) > 0:
             is_finalize = self.bytecodes[0]
             self.bytecodes = self.bytecodes[1:]
             if is_finalize == 1:
