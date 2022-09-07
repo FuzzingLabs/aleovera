@@ -23,3 +23,6 @@ class bytecodes:
         res = self.bytecodes[:n]
         self.bytecodes = self.bytecodes[n:]
         return res
+    
+    def peek(self):
+        return self.bytecodes[0]

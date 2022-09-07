@@ -1,7 +1,10 @@
 from enum import Enum, auto
 import bytecodes
 from register import register
+from IOregister import IOregister
+import valueType
 import utils
+from operand import operand
 
 
 class Opcode(Enum):
@@ -76,56 +79,11 @@ BINARY = [Opcode.Add, Opcode.AddWrapped, Opcode.Sub, Opcode.SubWrapped, Opcode.M
 
 ASSERT = [Opcode.AssertEq, Opcode.AssertNeq]
 
-class Operand(Enum):
-    Literal = 0
-    Register = 1
-    ProgramID = 2
-    Caller = 3
-
-
-class Literal(Enum):
-    address = 0
-    boolean = 1
-    field = 2
-    group = 3
-    i8 = 4
-    i16 = 5
-    i32 = 6
-    i64 = 7
-    i128 = 8
-    u8 = 9
-    u16 = 10
-    u32 = 11
-    u64 = 12
-    u128 = 13
-    scalar = 14
-    string = 15
-
 
 class instruction:
     def __init__(self) -> None:
         self.bytecodes = None
         self.disass = "INVALID"
-
-    def read_literal(self, type, bytecodes):
-        res = "UNHANDLED LITERAL TYPE"
-        if type == Literal.i128 or type == Literal.u128:
-            res = bytecodes.read_u128()
-
-        elif type == Literal.i64 or type == Literal.u64:
-            res = bytecodes.read_u64()
-
-        elif type == Literal.i32 or type == Literal.u32:
-            res = bytecodes.read_u32()
-
-        elif type == Literal.i16 or type == Literal.u16:
-            res = bytecodes.read_u16()
-
-        elif type == Literal.i8 or type == Literal.u8:
-            res = bytecodes.read_u8()
-
-        return res
-
 
     def read_identifier(self):
         size_of_string = int.from_bytes(self.bytecodes[:1], "little")
@@ -216,82 +174,55 @@ impl<N: Network> FromBytes for PlaintextType<N> {
     #         return self.read_identifiers()
     #     return "Invalid"
 
-    def get_operands(self, number_of_operand, bytecodes):
-        operands = []
-        for _ in range(number_of_operand):
-            op_type = Operand(bytecodes.read_u8())
-
-            if op_type == Operand.Literal:
-                literal_type = Literal(bytecodes.read_u16())
-                value = self.read_literal(literal_type, bytecodes)
-                operands.append("{}{}".format(value, literal_type.name))
-
-            elif op_type == Operand.Register:
-                reg = register(bytecodes)
-                operands.append(reg.fmt())
-            
-            elif op_type == Operand.ProgramID:
-                name = utils.read_identifier(bytecodes)
-                res = name
-                while bytecodes.read_u8() != 0:
-                    tail = utils.read_identifier(bytecodes)
-                    res += f'.{tail}'
-                operands.append(f"{res}")
-
-            elif op_type == Operand.Caller:
-                operands.append("self.caller")
-
-        return operands
-
 
     def read_binary_instruction(self, opcode, bytecodes):
-        operands = self.get_operands(2, bytecodes)
+        operands = operand(2, bytecodes, True).operands
 
         output = register(bytecodes)
 
         return f"{opcode.name} {operands[0]} {operands[1]} into {output.fmt()}"
 
     def read_unary_instruction(self, opcode, bytecodes):
-        operands = self.get_operands(1, bytecodes)
+        operands = operand(1, bytecodes, True).operands
 
         output = register(bytecodes)
 
         return f"{opcode.name} {operands[0]} into {output.fmt()}"
 
-    def read_variadic_instruction(self, opcode, bytecodes):
+    def read_cast_instruction(self, bytecodes):
         number_of_operand = bytecodes.read_u8()
         operands = ""
         
         if number_of_operand == 0 or number_of_operand > 8:
             print(f"Invalid cast ({number_of_operand} parameters)")
         
-        for string in self.get_operands(number_of_operand):
-            operands += " " + string
+
+        operands = operand.operands(number_of_operand, bytecodes, True).fmt()
 
         # Get output register, its formatted like an IO register
-        print(self.bytecodes)
-        output = self.read_register()
-        print("After")
-        print(self.bytecodes)
+        if bytecodes.read_u8() != 0:
+            return "Error in cast"
+        
+        output = bytecodes.read_u8()    
+
+        # Get casted type (Should be a single string) but stored weirdly, need to improve
+        valtype = bytecodes.peek()
+        cast = "ERROR PARSING CAST TYPE"
+        if valtype == 0:
+            bytecodes.read_u8()
+            cast = valueType.read_plaintext(bytecodes)
+        elif valtype == 1:
+            cast = valueType.read_plaintext(bytecodes)
 
 
-        # Get casted type (Should be a single string)
-        number_of_string = self.bytecodes[0]
-        self.bytecodes = self.bytecodes[1:]
-        cast = self.read_identifiers(number_of_string)
-
-        print(f"{opcode.name}{operands} into {output} as {cast[0]}")
-
-    def read_cast_instruction(self, bytecode):
-        return self.read_variadic_instruction(Opcode.Cast)
+        return f"Cast{operands} into r{output} as {cast}"
 
     def disassemble_instructions(self, bytecodes):
         index = bytecodes.read_u16()
         opcode = Opcode(index)
-
         # Need to make lists of function using the same pattern as xor (input1, input2, output) to dont decompile wrongly
         if opcode is Opcode.Cast:
-            self.disass = "UNTESTED - UNIMPLEMENTED"
+            self.disass = self.read_cast_instruction(bytecodes)
         elif opcode is Opcode.Call:
             self.disass = "UNTESTED - UNIMPLEMENTED"
         elif opcode is Opcode.Ternary:

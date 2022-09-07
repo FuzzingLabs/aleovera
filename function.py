@@ -35,11 +35,9 @@ class function:
 
     def read_finalize(self, bytecodes):
         new_finalize = finalize()
-        #self.bytecodes = new_finalize.disassemble_finalize(self.bytecodes)
         new_finalize.disassemble_finalize(bytecodes)
-        function_finalize = function(type="finalize")
-        #self.bytecodes = function_finalize.disassemble_function(self.bytecodes)
-        function_finalize.disassemble_function(bytecodes)
+#        function_finalize = function(type="finalize")
+#        function_finalize.disassemble_function(bytecodes)
         self.finalizes.append(new_finalize)
 
     def pretty_print(self):
@@ -53,6 +51,10 @@ class function:
         
         for i in range(self.number_outputs):
             self.registers[i + self.number_inputs].pretty_print()
+
+        if (self.finalizes):
+            xprint(f"finalize{self.finalizes[0].operands.fmt()}")
+            print("PARSE THE FINALIZE FUNCTION")
 
         utils.tab -= 1
 
