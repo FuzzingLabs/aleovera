@@ -56,7 +56,6 @@ class valueType:
         return res
 
     def read_plaintext_identifier(self, component):
-        # print(component.bytecodes)
         length = component.bytecodes[0]
         component.bytecodes = component.bytecodes[1:]
         res = component.bytecodes[:length]

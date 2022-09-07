@@ -1,5 +1,4 @@
 from enum import Enum, auto
-from http.client import SWITCHING_PROTOCOLS
 
 
 class Opcode(Enum):
@@ -60,7 +59,9 @@ class Opcode(Enum):
     Ternary = auto()
     Xor = auto()
 
-VARIADIC = [Opcode.Cast] 
+
+VARIADIC = [Opcode.Cast]
+
 
 class Operand(Enum):
     Literal = 0
@@ -68,8 +69,9 @@ class Operand(Enum):
     ProgramID = 2
     Caller = 3
 
+
 class Literal(Enum):
-    address = 0,
+    address = (0,)
     boolean = 1
     field = 2
     group = 3
@@ -96,12 +98,11 @@ class instruction:
         if type == Literal.i128 or type == Literal.u128:
             res = int.from_bytes(self.bytecodes[:16], "little")
             self.bytecodes = self.bytecodes[16:]
-                                                        
+
         elif type == Literal.i64 or type == Literal.u64:
             res = int.from_bytes(self.bytecodes[:8], "little")
             self.bytecodes = self.bytecodes[8:]
 
-                
         elif type == Literal.i32 or type == Literal.u32:
             res = int.from_bytes(self.bytecodes[:4], "little")
             self.bytecodes = self.bytecodes[4:]
@@ -109,7 +110,7 @@ class instruction:
         elif type == Literal.i16 or type == Literal.u16:
             res = int.from_bytes(self.bytecodes[:2], "little")
             self.bytecodes = self.bytecodes[2:]
-        
+
         elif type == Literal.i8 or type == Literal.u8:
             res = int.from_bytes(self.bytecodes[:1], "little")
             self.bytecodes = self.bytecodes[1:]
@@ -129,12 +130,14 @@ class instruction:
         return line
 
     def read_register(self):
-        content_type = int.from_bytes(self.bytecodes[:1], "little") # 0 if immediate, 1 if its like r0.zzz.bbb ...
+        content_type = int.from_bytes(
+            self.bytecodes[:1], "little"
+        )  # 0 if immediate, 1 if its like r0.zzz.bbb ...
         self.bytecodes = self.bytecodes[1:]
         register = int.from_bytes(self.bytecodes[:1], "little")
         self.bytecodes = self.bytecodes[1:]
         line = f"r{register}"
-        if (content_type == 1):
+        if content_type == 1:
             line += self.read_strings()
         return line
 
@@ -144,7 +147,9 @@ class instruction:
             op_type = Operand(int.from_bytes(self.bytecodes[:1], "little"))
             self.bytecodes = self.bytecodes[1:]
             if op_type == Operand.Literal:
-                literal_type = Literal(int.from_bytes(self.bytecodes[:2], "little"))
+                literal_type = Literal(
+                    int.from_bytes(self.bytecodes[:2], "little")
+                )
                 self.bytecodes = self.bytecodes[2:]
                 value = self.read_literal(literal_type)
                 operands.append("{}{}".format(value, literal_type.name))
@@ -155,7 +160,6 @@ class instruction:
 
         return operands
 
-
     def read_instruction_in_in_regout(self, opcode):
         operands = self.get_operands(2)
 
@@ -165,9 +169,7 @@ class instruction:
         register = int.from_bytes(self.bytecodes[:1], "little")
         operands.append("r" + str(register))
         self.bytecodes = self.bytecodes[1:]
-        print(
-            f"{opcode.name} {operands[0]} {operands[1]} into {operands[2]}"
-        )
+        print(f"{opcode.name} {operands[0]} {operands[1]} into {operands[2]}")
 
     def read_variadic_instruction(self, opcode):
         number_of_operand = int.from_bytes(self.bytecodes[:1], "little")
@@ -195,23 +197,18 @@ class instruction:
         self.bytecodes = self.bytecodes[size_of_string:]
         output.append(line)
 
-        print(
-            f"{opcode.name} {operands} into {output[0]} as {output[1]}"
-        )
-
-
+        print(f"{opcode.name} {operands} into {output[0]} as {output[1]}")
 
     def read_function_instructions(self):
         index = int.from_bytes(self.bytecodes[:2], "little")
         self.bytecodes = self.bytecodes[2:]
         opcode = Opcode(index)
-        
+
         # Need to make lists of function using the same pattern as xor (input1, input2, output) to dont decompile wrongly
         if opcode in VARIADIC:
             self.read_variadic_instruction(opcode)
         else:
             self.read_instruction_in_in_regout(opcode)
-
 
     def disassemble_instruction(self, bytes):
         self.bytecodes = bytes
