@@ -209,6 +209,9 @@ class instruction:
 
         print(f"{opcode.name} {operands} into {output[0]} as {output[1]}")
 
+    def read_cast_instruction(self):
+        return self.read_variadic_instruction(Opcode.Call)
+
     def read_function_instructions(self):
         index = int.from_bytes(self.bytecodes[:2], "little")
         self.bytecodes = self.bytecodes[2:]
