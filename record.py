@@ -1,5 +1,7 @@
 from enum import Enum
-from valueType import valueType, valueType_name, LiteralType
+from utils import xprint
+import valueType
+import utils
 
 
 class entry:
@@ -7,8 +9,8 @@ class entry:
         self.bytecodes = None
         self.valueType = None
         self.identifier = None
-        self.valueType_literal = None
-        self.valueType_identifier = None
+        self.plaintext_literal = None
+        self.plaintext_identifier = None
 
 
 class record:
@@ -17,29 +19,17 @@ class record:
         self.entries = []
         self.identifier = None
 
-    def read_identifier(self):
-        len_identifier = self.bytecodes[0]
-        self.bytecodes = self.bytecodes[1:]
-        identifier = self.bytecodes[:len_identifier].decode("utf-8")
-        self.bytecodes = self.bytecodes[len_identifier:]
-        return identifier
-
-    def set_record_owner(self):
+    def set_record_gates_owner(self, identifier):
         new_entry = entry()
-        new_entry.identifier = "owner"
+        new_entry.identifier = identifier
         value = self.bytecodes[0]
         self.bytecodes = self.bytecodes[1:]
-        new_entry.valueType = valueType_name((value == 1) + 1)
-        new_entry.valueType_literal = LiteralType(0).name
-        return new_entry
-
-    def set_record_gates(self):
-        new_entry = entry()
-        new_entry.identifier = "gates"
-        value = self.bytecodes[0]
-        self.bytecodes = self.bytecodes[1:]
-        new_entry.valueType = valueType_name((value == 1) + 1)
-        new_entry.valueType_literal = LiteralType(12).name
+        new_entry.valueType = valueType.valueType_name((value == 1) + 1)
+        new_entry.plaintext_literal = (
+            valueType.LiteralType(12).name
+            if (identifier == "gates")
+            else valueType.LiteralType(0).name
+        )
         return new_entry
 
     def read_record_num_entries(self):
@@ -49,20 +39,19 @@ class record:
 
     def disassemble_record(self, bytes):
         self.bytecodes = bytes
-        identifier = self.read_identifier()
-        owner = self.set_record_owner()
-        gates = self.set_record_gates()
+        identifier = utils.read_identifier(self)
+        owner = self.set_record_gates_owner("owner")
+        gates = self.set_record_gates_owner("gates")
         self.entries.append(owner)
         self.entries.append(gates)
-        print("record name : ", identifier)
+        xprint(f"record {identifier}")
+        utils.tab += 1
         num_entries = self.read_record_num_entries()
-        print("num of entries : ", num_entries)
-        value_type = valueType()
-        for i in range(num_entries):
+        for _ in range(num_entries):
             new_entry = entry()
-            new_entry.identifier = self.read_identifier()
             new_entry.bytecodes = self.bytecodes
-            value_type.read_value_type(component=new_entry)
+            new_entry.identifier = utils.read_identifier(new_entry)
+            valueType.read_value_type(new_entry)
             self.entries.append(new_entry)
             # Set bytecodes used to the entry in the entry bytecodes
             rest_of_bytecodes = new_entry.bytecodes
@@ -73,10 +62,10 @@ class record:
             self.bytecodes = rest_of_bytecodes
 
         for new_entry in self.entries:
-            print(
-                f"{new_entry.identifier} as {new_entry.valueType_literal}.{value_type.get_type(component=new_entry)} "
+            xprint(
+                f"{new_entry.identifier} as {new_entry.plaintext_literal}.{valueType.get_type(new_entry)} "
             )
-
+        utils.tab -= 1
         rest_of_bytecodes = self.bytecodes
         self.bytecodes = bytes[: len(bytes) - len(rest_of_bytecodes)]
         return rest_of_bytecodes

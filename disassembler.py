@@ -2,10 +2,13 @@ from function import function
 from record import record
 from interface import interface
 from mapping import mapping
+from utils import xprint
+import utils
 
 
 class aleodisassembler:
     def __init__(self, bytes) -> None:
+        utils.tab_init()
         self.bytecodes = bytes
         self.version = None
         self.name = ""
@@ -16,7 +19,6 @@ class aleodisassembler:
         self.functions = []
         self.records = []
         self.mappings = []
-        # print("bytecodes : ", self.bytecodes)
 
     def read_version(self):
         self.version = int.from_bytes(self.bytecodes[:2], "little")
@@ -66,38 +68,33 @@ class aleodisassembler:
         self.mappings.append(new_mapping)
 
     def read_components(self):
-        print("")
-        for i in range(self.number_components):
+        xprint("")
+        for _ in range(self.number_components):
             type = self.bytecodes[0]
             self.bytecodes = self.bytecodes[1:]
             if type == 0:
-                print("---mapping detected---")
                 self.read_mapping()
             elif type == 1:
-                print("---interface detected---")
                 self.read_interface()
             elif type == 2:
-                print("---record detected---")
                 self.read_record()
             elif type == 3:
-                print("---closure detected---")
                 self.read_function("closure")
             elif type == 4:
-                print("---function detected---")
                 self.read_function("function")
             else:
-                print("type does not exist : ", type)
-            print("")
+                xprint("type does not exist : ", type)
+            xprint("")
 
     def disassemble(self):
         self.read_version()
-        print("version : ", self.version)
+        xprint("version : ", self.version)
         self.read_programID()
-        print("program ID : ", self.name + "." + self.network)
+        xprint("program ID : ", self.name + "." + self.network)
         self.read_number_program_imports()
-        print("number of imports : ", self.number_imports)
+        xprint("number of imports : ", self.number_imports)
         self.read_imports()
-        print("imports : ", self.imports)
+        xprint("imports : ", self.imports)
         self.read_number_components()
-        print("number of components : ", self.number_components)
+        xprint("number of components : ", self.number_components)
         self.read_components()

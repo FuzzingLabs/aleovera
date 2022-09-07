@@ -1,6 +1,8 @@
 from IOregister import IOregister
 from instruction import instruction
+from utils import xprint
 from finalize import finalize
+import utils
 
 
 class function:
@@ -46,8 +48,6 @@ class function:
     def read_finalize(self):
         new_finalize = finalize()
         self.bytecodes = new_finalize.disassemble_finalize(self.bytecodes)
-        print()
-        print("---finalize function detected---")
         function_finalize = function(type="finalize")
         self.bytecodes = function_finalize.disassemble_function(self.bytecodes)
         self.finalizes.append(new_finalize)
@@ -55,22 +55,18 @@ class function:
     def disassemble_function(self, bytes):
         self.bytecodes = bytes
         self.identifier = self.read_function_identifier()
-        print(f"{self.type} {self.identifier} : ")
+        xprint(f"{self.type} {self.identifier} : ")
+        utils.tab += 1
         ###inputs
         self.number_inputs = self.read_function_number_IOregister()
-        print("\n---Inputs detected---")
-        print("number of inputs : ", self.number_inputs)
         for i in range(self.number_inputs):
             self.read_IOregister("input")
         ###instructions
         self.number_instructions = self.read_function_number_instructions()
-        print("\n---Instructions detected---")
         for i in range(self.number_instructions):
             self.read_instructions()
         ###outputs
         self.number_outputs = self.read_function_number_IOregister()
-        print("\n---Outputs detected---")
-        print("number of outputs : ", self.number_outputs)
         for i in range(self.number_outputs):
             self.read_IOregister("output")
         ###finalize
@@ -78,8 +74,8 @@ class function:
             is_finalize = self.bytecodes[0]
             self.bytecodes = self.bytecodes[1:]
             if is_finalize == 1:
-                print("\n---Finalize detected---")
                 self.read_finalize()
+        utils.tab -= 1
         rest_of_bytecodes = self.bytecodes
         self.bytecodes = bytes[: len(bytes) - len(rest_of_bytecodes)]
         return rest_of_bytecodes

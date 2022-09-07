@@ -1,17 +1,15 @@
-from valueType import valueType
+from utils import xprint
+import valueType
 
 
 class IOregister:
     def __init__(self, IO_type) -> None:
         self.IO_type = IO_type
         self.bytecodes = None
-        self.register_variant = None
         self.register_locator = None
         self.identifiers = []
-        self.valueType = None
-        self.valueType_literal = None
-        self.valueType_identifier = None
-        self.valueType_content = None
+        self.plaintext_literal = None
+        self.plaintext_identifier = None
         self.record_identifier = None
 
     def read_variable_length_integer(self):
@@ -31,35 +29,28 @@ class IOregister:
 
     def disassemble_IOregister(self, bytes):
         self.bytecodes = bytes
-        print(self.bytecodes)
-        self.register_variant = self.bytecodes[0]
+        variant = self.bytecodes[0]
         self.bytecodes = self.bytecodes[1:]
         self.register_locator = self.read_variable_length_integer()
-        if self.register_variant == 1:
+        if variant == 1:
             num_identifiers = int.from_bytes(self.bytecodes[:2], "little")
             self.bytecodes = self.bytecodes[2:]
-            for i in range(num_identifiers):
+            for _ in range(num_identifiers):
                 self.identifiers.append(self.bytecodes[0])
                 self.bytecodes = self.bytecodes[1:]
-        elif self.register_variant != 0:
-            print("error register_variant")
-        ### get valueTYpe
+        elif variant != 0:
+            xprint("error register_variant")
+        ### get valueType
         if self.IO_type != "register":
-            value_type = valueType()
-            value_type.read_value_type(component=self)
-            if self.valueType_literal != None:
-                print(
-                    f"{self.IO_type} r{self.register_locator} as {self.valueType_literal}.{value_type.get_type(component=self)}"
-                )
-            elif self.valueType_identifier != None:
-                print(
-                    f"{self.IO_type} r{self.register_locator} as {self.valueType_identifier}.{value_type.get_type(component=self)}"
-                )
+            valueType.read_value_type(component=self)
+            res = f"{self.IO_type} r{self.register_locator} as "
+            if self.plaintext_literal != None:
+                res += f"{self.plaintext_literal}.{valueType.get_type(component=self)}"
+            elif self.plaintext_identifier != None:
+                res += f"{self.plaintext_identifier}.{valueType.get_type(component=self)}"
             elif self.record_identifier != None:
-                print(
-                    f"{self.IO_type} r{self.register_locator} as {self.record_identifier}"
-                )
+                res += f"{self.record_identifier}"
+        xprint(res)
         rest_of_bytecodes = self.bytecodes
         self.bytecodes = bytes[: len(bytes) - len(rest_of_bytecodes)]
-        print("used : ", self.bytecodes)
         return rest_of_bytecodes
