@@ -127,42 +127,100 @@ class instruction:
 
         return res
 
+
+    def read_identifier(self):
+        size_of_string = int.from_bytes(self.bytecodes[:1], "little")
+        self.bytecodes = self.bytecodes[1:]
+        string = self.bytecodes[:size_of_string].decode("ascii")
+        self.bytecodes = self.bytecodes[size_of_string:]
+        return string
+
     """
     Seeems like there's 2 convention for storing strings, so to handle it
     we just give the number needed when its not the first case
     """
-    def read_strings(self, number_of_string = 0):
+    def read_identifiers(self, number_of_string = 0):
         if (number_of_string == 0):
             number_of_string = int.from_bytes(self.bytecodes[:2], "little")
             self.bytecodes = self.bytecodes[2:]
         line = []
         for _ in range(number_of_string):
-            size_of_string = int.from_bytes(self.bytecodes[:1], "little")
-            self.bytecodes = self.bytecodes[1:]
-            string = self.bytecodes[:size_of_string].decode("ascii")
-            self.bytecodes = self.bytecodes[size_of_string:]
-            line.append(string)
+            line.append(self.read_identifier())
         return line
 
+    """
+impl<N: Network> FromBytes for PlaintextType<N> {
+    /// Reads a plaintext type from a buffer.
+    fn read_le<R: Read>(mut reader: R) -> IoResult<Self> {
+        let variant = u8::read_le(&mut reader)?;
+        match variant {
+            0 => Ok(Self::Literal(LiteralType::read_le(&mut reader)?)),
+            1 => Ok(Self::Interface(Identifier::read_le(&mut reader)?)),
+            2.. => Err(error(format!("Failed to deserialize annotation variant {variant}"))),
+        }
+    }
+}
+    """
+    def read_plaintext(self):
+        variant = int.from_bytes(
+            self.bytecodes[:1], "little"
+        )
+        if variant == 0:
+            return self.bytecodes[:2].decode("ascii")
+        elif variant == 1:
+            return self.read_identifier()
+        else:
+            return f"Failed to deserialize {variant}"
+        
+
+    def read_register_type(self):
+        variant = int.from_bytes(
+            self.bytecodes[:1], "little"
+        )
+        self.bytecodes = self.bytecodes[1:]
+        if variant == 0:
+            self.read_plaintext()
+        elif variant == 1:
+            print()
+        elif variant == 2:
+            print()
+        else:
+            print("INVALID REGISTER TYPE")
+
+# Decode the value of a variable length integer.
+# https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer
+
+    def read_variable_length_integer(self):
+        flag = self.bytecodes[0]
+        self.bytecodes = self.bytecodes[1:]
+        if flag >= 0 and flag <= 252:
+            return flag
+        elif flag == 0xFD:
+            self.bytecodes = self.bytecodes[2:]
+            return 16
+        elif flag == 0xFD:
+            self.bytecodes = self.bytecodes[4:]
+            return 32
+        else:
+            self.bytecodes = self.bytecodes[8:]
+            return 64
+
     def read_register(self):
-        content_type = int.from_bytes(
+        variant = int.from_bytes(
             self.bytecodes[:1], "little"
         )  # 0 if immediate, 1 if its like r0.zzz.bbb ...
         self.bytecodes = self.bytecodes[1:]
-        register = int.from_bytes(self.bytecodes[:1], "little")
-        self.bytecodes = self.bytecodes[1:]
-        line = f"r{register}"
-        if content_type == 1:
-            for string in self.read_strings():
-                line += f'.{string}'
-        return line
+        locator = self.read_variable_length_integer()
+        if variant == 0:
+            return f'r{locator}'
+        elif variant == 1:
+            return self.read_identifiers()
+        return "Invalid"
 
     # Output of an instruction can only be a register 
     def read_instruction_output(self):
         output = self.read_register()
         return output
-
-
 
     def get_operands(self, number_of_operand):
         operands = []
@@ -170,6 +228,8 @@ class instruction:
         for _ in range(number_of_operand):
             op_type = Operand(int.from_bytes(self.bytecodes[:1], "little"))
             self.bytecodes = self.bytecodes[1:]
+#            print(op_type.name)
+#            print(self.bytecodes)
             if op_type == Operand.Literal:
                 literal_type = Literal(
                     int.from_bytes(self.bytecodes[:2], "little")
@@ -183,18 +243,18 @@ class instruction:
                 operands.append(line)
             
             elif op_type == Operand.ProgramID:
-                name = self.read_strings(1)[0]
+                name = self.read_identifiers(1)[0]
                 res = name
                 while self.bytecodes[0] != 0:
-                    tail = self.read_strings(1)[0]
+                    tail = self.read_identifiers(1)[0]
                     res += f'.{tail}'
                 self.bytecodes = self.bytecodes[1:] # The one from the loop
                 operands.append(f"{res}")
 
             elif op_type == Operand.Caller:
-                self.bytecodes = self.bytecodes[1:] 
                 operands.append("self.caller")
-
+#        print("Operand handled: Remaining")
+#        print(self.bytecodes)
         return operands
 
 
@@ -216,22 +276,28 @@ class instruction:
         number_of_operand = int.from_bytes(self.bytecodes[:1], "little")
         self.bytecodes = self.bytecodes[1:]
         operands = ""
-
+        
+        if number_of_operand == 0 or number_of_operand > 8:
+            print(f"Invalid cast ({number_of_operand} parameters)")
+        
         for string in self.get_operands(number_of_operand):
             operands += " " + string
 
-        # Get output register
-        output = self.read_instruction_output()
+        # Get output register, its formatted like an IO register
+        print(self.bytecodes)
+        output = self.read_register()
+        print("After")
+        print(self.bytecodes)
+
 
         # Get casted type (Should be a single string)
         number_of_string = self.bytecodes[0]
         self.bytecodes = self.bytecodes[1:]
-        cast = self.read_strings(number_of_string)
+        cast = self.read_identifiers(number_of_string)
 
         print(f"{opcode.name}{operands} into {output} as {cast[0]}")
 
     def read_cast_instruction(self):
-        print(self.bytecodes)
         return self.read_variadic_instruction(Opcode.Cast)
 
     def read_function_instructions(self):
