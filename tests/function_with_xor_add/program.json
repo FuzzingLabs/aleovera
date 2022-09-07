@@ -1,0 +1,10 @@
+{
+    "program": "function_with_xor_add.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkpDjBNYJPYTZGo5NaRtQnHEz1Qux2P6dMXG8EDxLWLHbdE",
+        "address": "aleo1vf76m76lcpgxf0lwr64n6v86m0sz6pju6wqq90fx62fqul7g2vqs0vrpe3"
+    },
+    "license": "MIT"
+}

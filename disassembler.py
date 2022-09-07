@@ -1,6 +1,7 @@
 from function import function
 from record import record
 from interface import interface
+from mapping import mapping
 
 
 class aleodisassembler:
@@ -14,7 +15,8 @@ class aleodisassembler:
         self.number_components = None
         self.functions = []
         self.records = []
-        print("bytecodes : ", self.bytecodes)
+        self.mappings = []
+        # print("bytecodes : ", self.bytecodes)
 
     def read_version(self):
         self.version = int.from_bytes(self.bytecodes[:2], "little")
@@ -32,9 +34,7 @@ class aleodisassembler:
         self.bytecodes = self.bytecodes[len_network:]
 
     def read_number_program_imports(self):
-        self.number_imports = self.bytecodes[
-            0
-        ]  # int.from_bytes(self.bytecodes[0], "little")
+        self.number_imports = self.bytecodes[0]
         self.bytecodes = self.bytecodes[1:]
 
     def read_imports(self):
@@ -60,13 +60,19 @@ class aleodisassembler:
         self.bytecodes = new_interface.disassemble_interface(self.bytecodes)
         self.records.append(new_interface)
 
+    def read_mapping(self):
+        new_mapping = mapping()
+        self.bytecodes = new_mapping.disassemble_mapping(self.bytecodes)
+        self.mappings.append(new_mapping)
+
     def read_components(self):
         print("")
         for i in range(self.number_components):
             type = self.bytecodes[0]
             self.bytecodes = self.bytecodes[1:]
             if type == 0:
-                print(type)
+                print("---mapping detected---")
+                self.read_mapping()
             elif type == 1:
                 print("---interface detected---")
                 self.read_interface()

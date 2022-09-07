@@ -41,6 +41,9 @@ class function:
         self.bytecodes = new_instruction.disassemble_instruction(self.bytecodes)
         self.instructions.append(new_instruction)
 
+    def read_finalize(self):
+        print("todo")
+
     def disassemble_function(self, bytes):
         self.bytecodes = bytes
         self.identifier = self.read_function_identifier()
@@ -56,12 +59,18 @@ class function:
         print("\n---Instructions detected---")
         for i in range(self.number_instructions):
             self.read_instructions()
-
+        ###outputs
         self.number_outputs = self.read_function_number_IOregister()
         print("\n---Outputs detected---")
         print("number of outputs : ", self.number_outputs)
         for i in range(self.number_outputs):
             self.read_IOregister("output")
+        ###finalize
+        if self.type == "function":
+            is_finalize = self.bytecodes[0]
+            self.bytecodes = self.bytecodes[1:]
+            if is_finalize == 1:
+                self.read_finalize()
         rest_of_bytecodes = self.bytecodes
         self.bytecodes = bytes[: len(bytes) - len(rest_of_bytecodes)]
         return rest_of_bytecodes

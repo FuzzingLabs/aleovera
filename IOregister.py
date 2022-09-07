@@ -15,7 +15,6 @@ class IOregister:
 
     def read_variable_length_integer(self):
         flag = self.bytecodes[0]
-        # print("type flag : ", flag)
         self.bytecodes = self.bytecodes[1:]
         if flag >= 0 and flag <= 252:
             return flag
@@ -31,20 +30,15 @@ class IOregister:
 
     def disassemble_IOregister(self, bytes):
         self.bytecodes = bytes
-        # print(self.bytecodes)
         self.register_variant = self.bytecodes[0]
         self.bytecodes = self.bytecodes[1:]
         self.register_locator = self.read_variable_length_integer()
-        # print("register locator : ", self.register_locator)
-        # print("register variant : ", self.register_variant)
         if self.register_variant == 1:
             num_identifiers = int.from_bytes(self.bytecodes[:2], "little")
-            # print("register identifier : ", num_identifiers)
             self.bytecodes = self.bytecodes[2:]
             for i in range(num_identifiers):
                 self.identifiers.append(self.bytecodes[0])
                 self.bytecodes = self.bytecodes[1:]
-            # print("register identifiers : ", self.identifiers)
         elif self.register_variant != 0:
             print("error register_variant")
         ### get valueTYpe
@@ -58,7 +52,6 @@ class IOregister:
             print(
                 f"{self.IO_type} r{self.register_locator} as {self.valueType_identifier}.{value_type.get_type(component=self)}"
             )
-        # print(self.identifiers)
         rest_of_bytecodes = self.bytecodes
         self.bytecodes = bytes[: len(bytes) - len(rest_of_bytecodes)]
         return rest_of_bytecodes
