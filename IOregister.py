@@ -31,6 +31,7 @@ class IOregister:
 
     def disassemble_IOregister(self, bytes):
         self.bytecodes = bytes
+        print(self.bytecodes)
         self.register_variant = self.bytecodes[0]
         self.bytecodes = self.bytecodes[1:]
         self.register_locator = self.read_variable_length_integer()
@@ -60,4 +61,5 @@ class IOregister:
                 )
         rest_of_bytecodes = self.bytecodes
         self.bytecodes = bytes[: len(bytes) - len(rest_of_bytecodes)]
+        print("used : ", self.bytecodes)
         return rest_of_bytecodes

@@ -46,4 +46,5 @@ class finalize:
         self.read_operands()
         rest_of_bytecodes = self.bytecodes
         self.bytecodes = bytes[: len(bytes) - len(rest_of_bytecodes)]
+        # print(rest_of_bytecodes)
         return rest_of_bytecodes

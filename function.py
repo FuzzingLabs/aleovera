@@ -46,6 +46,10 @@ class function:
     def read_finalize(self):
         new_finalize = finalize()
         self.bytecodes = new_finalize.disassemble_finalize(self.bytecodes)
+        print()
+        print("---finalize function detected---")
+        function_finalize = function(type="finalize")
+        self.bytecodes = function_finalize.disassemble_function(self.bytecodes)
         self.finalizes.append(new_finalize)
 
     def disassemble_function(self, bytes):
