@@ -1,0 +1,10 @@
+{
+    "program": "record_function_cast.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkpH7X8NW6RZWuPZJPUiQ82p1mrN3hVsTCNGHHEnACVisF6",
+        "address": "aleo1fhvh4sndpvyuj6nux2jp8npfu9ughrv9wgk4edzrjvn0uzf3kvzqdk7yym"
+    },
+    "license": "MIT"
+}
