@@ -1,4 +1,7 @@
 from enum import Enum, auto
+import bytecodes
+from register import register
+import utils
 
 
 class Opcode(Enum):
@@ -102,28 +105,24 @@ class Literal(Enum):
 class instruction:
     def __init__(self) -> None:
         self.bytecodes = None
+        self.disass = "INVALID"
 
-    def read_literal(self, type):
+    def read_literal(self, type, bytecodes):
         res = "UNHANDLED LITERAL TYPE"
         if type == Literal.i128 or type == Literal.u128:
-            res = int.from_bytes(self.bytecodes[:16], "little")
-            self.bytecodes = self.bytecodes[16:]
+            res = bytecodes.read_u128()
 
         elif type == Literal.i64 or type == Literal.u64:
-            res = int.from_bytes(self.bytecodes[:8], "little")
-            self.bytecodes = self.bytecodes[8:]
+            res = bytecodes.read_u64()
 
         elif type == Literal.i32 or type == Literal.u32:
-            res = int.from_bytes(self.bytecodes[:4], "little")
-            self.bytecodes = self.bytecodes[4:]
+            res = bytecodes.read_u32()
 
         elif type == Literal.i16 or type == Literal.u16:
-            res = int.from_bytes(self.bytecodes[:2], "little")
-            self.bytecodes = self.bytecodes[2:]
+            res = bytecodes.read_u16()
 
         elif type == Literal.i8 or type == Literal.u8:
-            res = int.from_bytes(self.bytecodes[:1], "little")
-            self.bytecodes = self.bytecodes[1:]
+            res = bytecodes.read_u8()
 
         return res
 
@@ -205,72 +204,59 @@ impl<N: Network> FromBytes for PlaintextType<N> {
             self.bytecodes = self.bytecodes[8:]
             return 64
 
-    def read_register(self):
-        variant = int.from_bytes(
-            self.bytecodes[:1], "little"
-        )  # 0 if immediate, 1 if its like r0.zzz.bbb ...
-        self.bytecodes = self.bytecodes[1:]
-        locator = self.read_variable_length_integer()
-        if variant == 0:
-            return f'r{locator}'
-        elif variant == 1:
-            return self.read_identifiers()
-        return "Invalid"
+    # def read_register2(self, bytecodes):
+    #     variant = int.from_bytes(
+    #         self.bytecodes[:1], "little"
+    #     )  # 0 if immediate, 1 if its like r0.zzz.bbb ...
+    #     self.bytecodes = self.bytecodes[1:]
+    #     locator = self.read_variable_length_integer()
+    #     if variant == 0:
+    #         return f'r{locator}'
+    #     elif variant == 1:
+    #         return self.read_identifiers()
+    #     return "Invalid"
 
-    # Output of an instruction can only be a register 
-    def read_instruction_output(self):
-        output = self.read_register()
-        return output
-
-    def get_operands(self, number_of_operand):
+    def get_operands(self, number_of_operand, bytecodes):
         operands = []
-        
         for _ in range(number_of_operand):
-            op_type = Operand(int.from_bytes(self.bytecodes[:1], "little"))
-            self.bytecodes = self.bytecodes[1:]
-#            print(op_type.name)
-#            print(self.bytecodes)
+            op_type = Operand(bytecodes.read_u8())
+
             if op_type == Operand.Literal:
-                literal_type = Literal(
-                    int.from_bytes(self.bytecodes[:2], "little")
-                )
-                self.bytecodes = self.bytecodes[2:]
-                value = self.read_literal(literal_type)
+                literal_type = Literal(bytecodes.read_u16())
+                value = self.read_literal(literal_type, bytecodes)
                 operands.append("{}{}".format(value, literal_type.name))
 
             elif op_type == Operand.Register:
-                line = self.read_register()
-                operands.append(line)
+                reg = register(bytecodes)
+                operands.append(reg.fmt())
             
             elif op_type == Operand.ProgramID:
-                name = self.read_identifiers(1)[0]
+                name = utils.read_identifier(bytecodes)
                 res = name
-                while self.bytecodes[0] != 0:
-                    tail = self.read_identifiers(1)[0]
+                while bytecodes.read_u8() != 0:
+                    tail = utils.read_identifier(bytecodes)
                     res += f'.{tail}'
-                self.bytecodes = self.bytecodes[1:] # The one from the loop
                 operands.append(f"{res}")
 
             elif op_type == Operand.Caller:
                 operands.append("self.caller")
-#        print("Operand handled: Remaining")
-#        print(self.bytecodes)
+
         return operands
 
 
-    def read_binary_instruction(self, opcode):
-        operands = self.get_operands(2)
+    def read_binary_instruction(self, opcode, bytecodes):
+        operands = self.get_operands(2, bytecodes)
 
-        output = self.read_instruction_output()
+        output = register(bytecodes)
 
-        print(f"{opcode.name} {operands[0]} {operands[1]} into {output}")
+        return f"{opcode.name} {operands[0]} {operands[1]} into {output.fmt()}"
 
-    def read_unary_instruction(self, opcode):
-        operands = self.get_operands(1)
+    def read_unary_instruction(self, opcode, bytecodes):
+        operands = self.get_operands(1, bytecodes)
 
-        output = self.read_instruction_output()
+        output = register(bytecodes)
 
-        print(f"{opcode.name} {operands[0]} into {output}")
+        return f"{opcode.name} {operands[0]} into {output.fmt()}"
 
     def read_variadic_instruction(self, opcode):
         number_of_operand = int.from_bytes(self.bytecodes[:1], "little")
@@ -297,33 +283,26 @@ impl<N: Network> FromBytes for PlaintextType<N> {
 
         print(f"{opcode.name}{operands} into {output} as {cast[0]}")
 
-    def read_cast_instruction(self):
+    def read_cast_instruction(self, bytecode):
         return self.read_variadic_instruction(Opcode.Cast)
 
-    def read_function_instructions(self):
-        index = int.from_bytes(self.bytecodes[:2], "little")
-        self.bytecodes = self.bytecodes[2:]
+    def disassemble_instructions(self, bytecodes):
+        index = bytecodes.read_u16()
         opcode = Opcode(index)
 
         # Need to make lists of function using the same pattern as xor (input1, input2, output) to dont decompile wrongly
         if opcode is Opcode.Cast:
-            self.read_cast_instruction()
+            self.disass = "UNTESTED - UNIMPLEMENTED"
         elif opcode is Opcode.Call:
-            print("UNTESTED - UNIMPLEMENTED")
+            self.disass = "UNTESTED - UNIMPLEMENTED"
         elif opcode is Opcode.Ternary:
-            print("UNTESTED - UNIMPLEMENTED")
+            self.disass = "UNTESTED - UNIMPLEMENTED"
         elif opcode in ASSERT:
-            print("UNTESTED - UNIMPLEMENTED")
+            self.disass = "UNTESTED - UNIMPLEMENTED"
         elif opcode in UNARY:
-            self.read_unary_instruction(opcode)
+            self.disass = self.read_unary_instruction(opcode, bytecodes)
         elif opcode in BINARY:
-            self.read_binary_instruction(opcode)
+            self.disass = self.read_binary_instruction(opcode, bytecodes)
         else:
-            print("UNKNOWN operation type")
-
-    def disassemble_instruction(self, bytes):
-        self.bytecodes = bytes
-        self.read_function_instructions()
-        rest_of_bytecodes = self.bytecodes
-        self.bytecodes = bytes[: len(bytes) - len(rest_of_bytecodes)]
-        return rest_of_bytecodes
+            self.disass = "UNKNOWN opcode"
+        

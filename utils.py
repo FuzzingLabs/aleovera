@@ -22,6 +22,13 @@ def read_variable_length_integer(bytecodes):
         bytecodes = bytecodes[8:]
         return 64
 
+def read_identifiers(bytecodes):
+    number_of_string = bytecodes.read_u16()
+    identifiers = []
+    for _ in range(number_of_string):
+        identifiers.append(read_identifier(bytecodes))
+    return identifiers
+
 
 def read_identifier(bytecodes):
     len_identifier = bytecodes.read_u8()
