@@ -69,7 +69,7 @@ UNARY = [Opcode.Abs, Opcode.AbsWrapped, Opcode.Double, Opcode.Inv, Opcode.Neg, O
 
 BINARY = [Opcode.Add, Opcode.AddWrapped, Opcode.Sub, Opcode.SubWrapped, Opcode.Mul, Opcode.MulWrapped,
         Opcode.Div, Opcode.DivWrapped, Opcode.Rem, Opcode.RemWrapped, Opcode.Pow, Opcode.PowWrapped,
-        Opcode.Shl, Opcode.ShlWrapped, Opcode.Shr, Opcode.ShrWrapped, Opcode.And, Opcode.Or, Opcode.Nand,
+        Opcode.Shl, Opcode.ShlWrapped, Opcode.Shr, Opcode.ShrWrapped, Opcode.And, Opcode.Xor, Opcode.Or, Opcode.Nand,
         Opcode.Nor, Opcode.GreaterThan, Opcode.GreaterThanOrEqual, Opcode.LessThan, Opcode.LessThanOrEqual,
         Opcode.IsEq, Opcode.IsNeq, Opcode.CommitBHP256, Opcode.CommitBHP512, Opcode.CommitBHP768,
         Opcode.CommitBHP1024, Opcode.CommitPED64, Opcode.CommitPED128]
@@ -258,9 +258,8 @@ impl<N: Network> FromBytes for PlaintextType<N> {
 
         return f"{opcode.name} {operands[0]} into {output.fmt()}"
 
-    def read_variadic_instruction(self, opcode):
-        number_of_operand = int.from_bytes(self.bytecodes[:1], "little")
-        self.bytecodes = self.bytecodes[1:]
+    def read_variadic_instruction(self, opcode, bytecodes):
+        number_of_operand = bytecodes.read_u8()
         operands = ""
         
         if number_of_operand == 0 or number_of_operand > 8:
