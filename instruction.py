@@ -1,5 +1,4 @@
 from enum import Enum, auto
-from http.client import SWITCHING_PROTOCOLS
 
 
 class Opcode(Enum):
@@ -60,7 +59,19 @@ class Opcode(Enum):
     Ternary = auto()
     Xor = auto()
 
-VARIADIC = [Opcode.Cast] 
+
+UNARY = [Opcode.Abs, Opcode.AbsWrapped, Opcode.Double, Opcode.Inv, Opcode.Neg, Opcode.Not, Opcode.Square,
+        Opcode.SquareRoot, Opcode.HashBHP256, Opcode.HashBHP512, Opcode.HashBHP768, Opcode.HashBHP1024,
+        Opcode.HashPED64, Opcode.HashPED128, Opcode.HashPSD2, Opcode.HashPSD4, Opcode.HashPSD8]
+
+BINARY = [Opcode.Add, Opcode.AddWrapped, Opcode.Sub, Opcode.SubWrapped, Opcode.Mul, Opcode.MulWrapped,
+        Opcode.Div, Opcode.DivWrapped, Opcode.Rem, Opcode.RemWrapped, Opcode.Pow, Opcode.PowWrapped,
+        Opcode.Shl, Opcode.ShlWrapped, Opcode.Shr, Opcode.ShrWrapped, Opcode.And, Opcode.Or, Opcode.Nand,
+        Opcode.Nor, Opcode.GreaterThan, Opcode.GreaterThanOrEqual, Opcode.LessThan, Opcode.LessThanOrEqual,
+        Opcode.IsEq, Opcode.IsNeq, Opcode.CommitBHP256, Opcode.CommitBHP512, Opcode.CommitBHP768,
+        Opcode.CommitBHP1024, Opcode.CommitPED64, Opcode.CommitPED128]
+
+ASSERT = [Opcode.AssertEq, Opcode.AssertNeq]
 
 class Operand(Enum):
     Literal = 0
@@ -199,7 +210,8 @@ class instruction:
             f"{opcode.name} {operands} into {output[0]} as {output[1]}"
         )
 
-
+    def read_cast_instruction(self):
+        return self.read_variadic_instruction(Opcode.Cast)
 
     def read_function_instructions(self):
         index = int.from_bytes(self.bytecodes[:2], "little")
@@ -207,8 +219,16 @@ class instruction:
         opcode = Opcode(index)
         
         # Need to make lists of function using the same pattern as xor (input1, input2, output) to dont decompile wrongly
-        if opcode in VARIADIC:
-            self.read_variadic_instruction(opcode)
+        if opcode is Opcode.Cast:
+            self.read_cast_instruction()
+        elif opcode is Opcode.Call:
+            print("UNTESTED - UNIMPLEMENTED")
+        elif opcode is Opcode.Ternary:
+            print("UNTESTED - UNIMPLEMENTED")
+        elif opcode in ASSERT:
+            print("UNTESTED - UNIMPLEMENTED")
+        elif opcode in UNARY:
+            print("UNTESTED - UNIMPLEMENTED")
         else:
             self.read_instruction_in_in_regout(opcode)
 
