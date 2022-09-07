@@ -81,7 +81,7 @@ class Operand(Enum):
 
 
 class Literal(Enum):
-    address = (0,)
+    address = 0
     boolean = 1
     field = 2
     group = 3
@@ -191,6 +191,10 @@ class instruction:
                 self.bytecodes = self.bytecodes[1:] # The one from the loop
                 operands.append(f"{res}")
 
+            elif op_type == Operand.Caller:
+                self.bytecodes = self.bytecodes[1:] 
+                operands.append("self.caller")
+
         return operands
 
 
@@ -200,6 +204,13 @@ class instruction:
         output = self.read_instruction_output()
 
         print(f"{opcode.name} {operands[0]} {operands[1]} into {output}")
+
+    def read_unary_instruction(self, opcode):
+        operands = self.get_operands(1)
+
+        output = self.read_instruction_output()
+
+        print(f"{opcode.name} {operands[0]} into {output}")
 
     def read_variadic_instruction(self, opcode):
         number_of_operand = int.from_bytes(self.bytecodes[:1], "little")
@@ -220,6 +231,7 @@ class instruction:
         print(f"{opcode.name}{operands} into {output} as {cast[0]}")
 
     def read_cast_instruction(self):
+        print(self.bytecodes)
         return self.read_variadic_instruction(Opcode.Cast)
 
     def read_function_instructions(self):
@@ -237,9 +249,11 @@ class instruction:
         elif opcode in ASSERT:
             print("UNTESTED - UNIMPLEMENTED")
         elif opcode in UNARY:
-            print("UNTESTED - UNIMPLEMENTED")
-        else:
+            self.read_unary_instruction(opcode)
+        elif opcode in BINARY:
             self.read_binary_instruction(opcode)
+        else:
+            print("UNKNOWN operation type")
 
     def disassemble_instruction(self, bytes):
         self.bytecodes = bytes
