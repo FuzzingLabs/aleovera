@@ -127,16 +127,21 @@ class instruction:
 
         return res
 
-    def read_strings(self):
-        number_of_string = int.from_bytes(self.bytecodes[:2], "little")
-        self.bytecodes = self.bytecodes[2:]
-        line = ""
+    """
+    Seeems like there's 2 convention for storing strings, so to handle it
+    we just give the number needed when its not the first case
+    """
+    def read_strings(self, number_of_string = 0):
+        if (number_of_string == 0):
+            number_of_string = int.from_bytes(self.bytecodes[:2], "little")
+            self.bytecodes = self.bytecodes[2:]
+        line = []
         for _ in range(number_of_string):
             size_of_string = int.from_bytes(self.bytecodes[:1], "little")
             self.bytecodes = self.bytecodes[1:]
             string = self.bytecodes[:size_of_string].decode("ascii")
             self.bytecodes = self.bytecodes[size_of_string:]
-            line += f".{string}"
+            line.append(string)
         return line
 
     def read_register(self):
@@ -148,11 +153,20 @@ class instruction:
         self.bytecodes = self.bytecodes[1:]
         line = f"r{register}"
         if content_type == 1:
-            line += self.read_strings()
+            for string in self.read_strings():
+                line += f'.{string}'
         return line
+
+    # Output of an instruction can only be a register 
+    def read_instruction_output(self):
+        output = self.read_register()
+        return output
+
+
 
     def get_operands(self, number_of_operand):
         operands = []
+        
         for _ in range(number_of_operand):
             op_type = Operand(int.from_bytes(self.bytecodes[:1], "little"))
             self.bytecodes = self.bytecodes[1:]
@@ -167,19 +181,25 @@ class instruction:
             elif op_type == Operand.Register:
                 line = self.read_register()
                 operands.append(line)
+            
+            elif op_type == Operand.ProgramID:
+                name = self.read_strings(1)[0]
+                res = name
+                while self.bytecodes[0] != 0:
+                    tail = self.read_strings(1)[0]
+                    res += f'.{tail}'
+                self.bytecodes = self.bytecodes[1:] # The one from the loop
+                operands.append(f"{res}")
 
         return operands
 
-    def read_instruction_in_in_regout(self, opcode):
+
+    def read_binary_instruction(self, opcode):
         operands = self.get_operands(2)
 
-        unk = self.bytecodes[0]
-        self.bytecodes = self.bytecodes[1:]
+        output = self.read_instruction_output()
 
-        register = int.from_bytes(self.bytecodes[:1], "little")
-        operands.append("r" + str(register))
-        self.bytecodes = self.bytecodes[1:]
-        print(f"{opcode.name} {operands[0]} {operands[1]} into {operands[2]}")
+        print(f"{opcode.name} {operands[0]} {operands[1]} into {output}")
 
     def read_variadic_instruction(self, opcode):
         number_of_operand = int.from_bytes(self.bytecodes[:1], "little")
@@ -188,29 +208,19 @@ class instruction:
 
         for string in self.get_operands(number_of_operand):
             operands += " " + string
-        operands = operands[1:]
 
         # Get output register
-        output = []
-        unk = self.bytecodes[0]
-        self.bytecodes = self.bytecodes[1:]
+        output = self.read_instruction_output()
 
-        register = int.from_bytes(self.bytecodes[:1], "little")
-        output.append("r" + str(register))
+        # Get casted type (Should be a single string)
+        number_of_string = self.bytecodes[0]
         self.bytecodes = self.bytecodes[1:]
+        cast = self.read_strings(number_of_string)
 
-        self.bytecodes = self.bytecodes[2:]
-        # Get casted type (single string)
-        size_of_string = self.bytecodes[0]
-        self.bytecodes = self.bytecodes[1:]
-        line = self.bytecodes[:size_of_string].decode("ascii")
-        self.bytecodes = self.bytecodes[size_of_string:]
-        output.append(line)
-
-        print(f"{opcode.name} {operands} into {output[0]} as {output[1]}")
+        print(f"{opcode.name}{operands} into {output} as {cast[0]}")
 
     def read_cast_instruction(self):
-        return self.read_variadic_instruction(Opcode.Call)
+        return self.read_variadic_instruction(Opcode.Cast)
 
     def read_function_instructions(self):
         index = int.from_bytes(self.bytecodes[:2], "little")
@@ -229,7 +239,7 @@ class instruction:
         elif opcode in UNARY:
             print("UNTESTED - UNIMPLEMENTED")
         else:
-            self.read_instruction_in_in_regout(opcode)
+            self.read_binary_instruction(opcode)
 
     def disassemble_instruction(self, bytes):
         self.bytecodes = bytes
