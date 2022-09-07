@@ -1,5 +1,5 @@
-from utils import xprint
 from enum import Enum, auto
+import utils
 
 
 class LiteralType(Enum):
@@ -37,7 +37,7 @@ class LiteralType(Enum):
     String = auto()
 
 
-class valueType_name(Enum):
+class attributeType(Enum):
     constant = 0
     public = auto()
     private = auto()
@@ -45,54 +45,20 @@ class valueType_name(Enum):
     externalrecord = auto()
 
 
-def get_type(component):
-    return valueType_name(component.valueType).name
-
-
-def read_plaintext_literal(component):
-    res = component.bytecodes[:2]
-    component.bytecodes = component.bytecodes[2:]
-    res = LiteralType(int.from_bytes(res, "little")).name
+def read_plaintext_literal(bytecodes):
+    res = bytecodes.read_u16()
+    res = LiteralType(res).name
     return res
 
 
-def read_plaintext_identifier(component):
-    length = component.bytecodes[0]
-    component.bytecodes = component.bytecodes[1:]
-    res = component.bytecodes[:length]
-    component.bytecodes = component.bytecodes[length:]
-    return res.decode("utf-8")
-
-
-def read_valueType_plaintext(component):
-    variant = component.bytecodes[0]
-    component.bytecodes = component.bytecodes[1:]
+def read_plaintext(bytecodes):
+    variant = bytecodes.read_u8()
     if variant == 0:
-        component.plaintext_literal = read_plaintext_literal(component)
+        return read_plaintext_literal(bytecodes)
     elif variant == 1:
-        component.plaintext_identifier = read_plaintext_identifier(component)
+        return utils.read_identifier(bytecodes)
 
 
-def read_record_identifier(component):
-    length = component.bytecodes[0]
-    component.bytecodes = component.bytecodes[1:]
-    res = component.bytecodes[:length]
-    component.bytecodes = component.bytecodes[length:]
-    component.record_identifier = res.decode("utf-8")
-
-
-def read_value_type(component):
-    component.valueType = component.bytecodes[0]
-    component.bytecodes = component.bytecodes[1:]
-    if component.valueType == 0:
-        read_valueType_plaintext(component)
-    elif component.valueType == 1:
-        read_valueType_plaintext(component)
-    elif component.valueType == 2:
-        read_valueType_plaintext(component)
-    elif component.valueType == 3:
-        read_record_identifier(component)
-    elif component.valueType == 4:
-        xprint("external record value type todo")
-    else:
-        xprint("fail ")
+def read_value_type(bytecodes):
+    attribute_type = attributeType(bytecodes.read_u8())
+    return attribute_type

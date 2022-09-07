@@ -8,15 +8,22 @@ def xprint(*args, end="\n"):
     print(tab_str + "".join(map(str, args)), end=end)
 
 
-def read_n_bytes(bytecodes, n):
-    index = bytecodes[:n]
-    bytecodes = bytecodes[n:]
-    return index, bytecodes
+def read_variable_length_integer(bytecodes):
+    flag = bytecodes.read_u8()
+    if flag >= 0 and flag <= 252:
+        return flag
+    elif flag == 0xFD:
+        bytecodes = bytecodes[2:]
+        return 16
+    elif flag == 0xFD:
+        bytecodes = bytecodes[4:]
+        return 32
+    else:
+        bytecodes = bytecodes[8:]
+        return 64
 
 
-def read_identifier(component):
-    len_identifier = component.bytecodes[0]
-    component.bytecodes = component.bytecodes[1:]
-    identifier = component.bytecodes[:len_identifier].decode("utf-8")
-    component.bytecodes = component.bytecodes[len_identifier:]
+def read_identifier(bytecodes):
+    len_identifier = bytecodes.read_u8()
+    identifier = bytecodes.read_n(len_identifier).decode("utf-8")
     return identifier

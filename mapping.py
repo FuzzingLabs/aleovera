@@ -4,50 +4,47 @@ import utils
 
 
 class key_value:
-    def __init__(self) -> None:
+    def __init__(self, bytecodes) -> None:
         self.identifier = None
-        self.value_type = None
-        self.plaintext_literal = None
-        self.plaintext_identifier = None
+        self.attribute_type = None
+        self.value = None
+        self.read_key_value(bytecodes)
+
+    def read_key_value(self, bytecodes):
+        self.identifier = utils.read_identifier(bytecodes)
+        variant = bytecodes.read_u8()
+        if variant == 0:
+            self.attribute_type = valueType.attributeType(1).name
+        elif variant == 1:
+            self.attribute_type = valueType.attributeType(3).name
+        elif variant == 2:
+            self.attribute_type = valueType.attributeType(4).name
+        else:
+            xprint("error")
+        self.value = valueType.read_plaintext(bytecodes)
 
 
 class mapping:
-    def __init__(self) -> None:
+    def __init__(self, bytecodes) -> None:
         self.identifier = None
         self.key = None
         self.value = None
+        self.disassemble_mapping(bytecodes)
 
-    def read_key_value(self, component):
-        component.identifier = utils.read_identifier(self)
-        variant = self.bytecodes[0]
-        self.bytecodes = self.bytecodes[1:]
-        component.bytecodes = self.bytecodes
-        if variant == 0:
-            component.value_type = valueType.valueType_name(1).name
-        elif variant == 1:
-            component.value_type = valueType.valueType_name(3)
-        elif variant == 2:
-            component.value_type = valueType.valueType_name(4)
-        else:
-            xprint("error")
-        valueType.read_valueType_plaintext(component)
-        self.bytecodes = component.bytecodes
+    def pretty_print(self):
+        xprint(f"mapping {self.identifier}:")
+        utils.tab += 1
+        xprint(
+            f"key {self.key.identifier} as {self.key.value}.{self.key.attribute_type}"
+        )
+        xprint(
+            f"value {self.value.identifier} as {self.value.value}.{self.value.attribute_type}"
+        )
+        utils.tab -= 1
 
-    def disassemble_mapping(self, bytes):
-        self.bytecodes = bytes
-        self.identifier = utils.read_identifier(self)
+    def disassemble_mapping(self, bytecodes):
+        self.identifier = utils.read_identifier(bytecodes)
         # Get key and value
-        self.key = key_value()
-        self.read_key_value(self.key)
-        self.value = key_value()
-        self.read_key_value(self.value)
-        # xprint key and value
-        xprint(
-            f"key {self.key.identifier} as {self.key.plaintext_literal}.{self.key.value_type}"
-        )
-        xprint(
-            f"value {self.value.identifier} as {self.value.plaintext_literal}.{self.value.value_type}"
-        )
-        rest_of_bytecodes = self.bytecodes
-        self.bytecodes = bytes[: len(bytes) - len(rest_of_bytecodes)]
-        return rest_of_bytecodes
+        self.key = key_value(bytecodes)
+        self.value = key_value(bytecodes)
+        self.pretty_print()

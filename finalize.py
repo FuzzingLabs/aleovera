@@ -1,5 +1,5 @@
 from utils import xprint
-from IOregister import IOregister
+from register import register
 import valueType
 
 
@@ -12,9 +12,9 @@ class finalize:
         self.programID = None
         self.caller = None
 
-    def read_IOregister(self, IO_type):
-        new_input = IOregister(IO_type)
-        self.bytecodes = new_input.disassemble_IOregister(self.bytecodes)
+    def read_register(self):
+        new_input = register()
+        self.bytecodes = new_input.disassemble_register(self.bytecodes)
         self.registers.append(new_input)
 
     def read_operands(self):
