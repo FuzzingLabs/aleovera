@@ -72,6 +72,13 @@ class valueType:
                 component
             )
 
+    def read_record_identifier(self, component):
+        length = component.bytecodes[0]
+        component.bytecodes = component.bytecodes[1:]
+        res = component.bytecodes[:length]
+        component.bytecodes = component.bytecodes[length:]
+        component.record_identifier = res.decode("utf-8")
+
     def read_value_type(self, component):
         component.valueType = component.bytecodes[0]
         component.bytecodes = component.bytecodes[1:]
@@ -82,7 +89,7 @@ class valueType:
         elif component.valueType == 2:
             self.read_valueType_plaintext(component)
         elif component.valueType == 3:
-            print("record value type todo")
+            self.read_record_identifier(component)
         elif component.valueType == 4:
             print("external record value type todo")
         else:

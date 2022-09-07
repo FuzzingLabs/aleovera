@@ -12,6 +12,7 @@ class IOregister:
         self.valueType_literal = None
         self.valueType_identifier = None
         self.valueType_content = None
+        self.record_identifier = None
 
     def read_variable_length_integer(self):
         flag = self.bytecodes[0]
@@ -52,6 +53,10 @@ class IOregister:
             elif self.valueType_identifier != None:
                 print(
                     f"{self.IO_type} r{self.register_locator} as {self.valueType_identifier}.{value_type.get_type(component=self)}"
+                )
+            elif self.record_identifier != None:
+                print(
+                    f"{self.IO_type} r{self.register_locator} as {self.record_identifier}"
                 )
         rest_of_bytecodes = self.bytecodes
         self.bytecodes = bytes[: len(bytes) - len(rest_of_bytecodes)]
