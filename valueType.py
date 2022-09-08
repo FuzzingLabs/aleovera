@@ -1,5 +1,5 @@
 from enum import Enum, auto
-import enum
+import utils
 
 
 class LiteralType(Enum):
@@ -37,7 +37,7 @@ class LiteralType(Enum):
     String = auto()
 
 
-class valueType_name(Enum):
+class attributeType(Enum):
     constant = 0
     public = auto()
     private = auto()
@@ -45,52 +45,44 @@ class valueType_name(Enum):
     externalrecord = auto()
 
 
-class valueType:
-    def get_type(self, component):
-        return valueType_name(component.valueType).name
+def read_plaintext_literal(bytecodes):
+    """Get the literal type
 
-    def read_plaintext_literal(self, component):
-        res = component.bytecodes[:2]
-        component.bytecodes = component.bytecodes[2:]
-        res = LiteralType(int.from_bytes(res, "little")).name
-        return res
+    Args:
+        bytecodes (bytecodes): The bytecodes object
 
-    def read_plaintext_identifier(self, component):
-        length = component.bytecodes[0]
-        component.bytecodes = component.bytecodes[1:]
-        res = component.bytecodes[:length]
-        component.bytecodes = component.bytecodes[length:]
-        return res.decode("utf-8")
+    Returns:
+        LiteralType: the LiteralType
+    """
+    res = bytecodes.read_u16()
+    res = LiteralType(res).name
+    return res
 
-    def read_valueType_plaintext(self, component):
-        variant = component.bytecodes[0]
-        component.bytecodes = component.bytecodes[1:]
-        if variant == 0:
-            component.valueType_literal = self.read_plaintext_literal(component)
-        elif variant == 1:
-            component.valueType_identifier = self.read_plaintext_identifier(
-                component
-            )
 
-    def read_record_identifier(self, component):
-        length = component.bytecodes[0]
-        component.bytecodes = component.bytecodes[1:]
-        res = component.bytecodes[:length]
-        component.bytecodes = component.bytecodes[length:]
-        component.record_identifier = res.decode("utf-8")
+def read_plaintext(bytecodes):
+    """Read an identifier or get the LiteralType based on the first byte
 
-    def read_value_type(self, component):
-        component.valueType = component.bytecodes[0]
-        component.bytecodes = component.bytecodes[1:]
-        if component.valueType == 0:
-            self.read_valueType_plaintext(component)
-        elif component.valueType == 1:
-            self.read_valueType_plaintext(component)
-        elif component.valueType == 2:
-            self.read_valueType_plaintext(component)
-        elif component.valueType == 3:
-            self.read_record_identifier(component)
-        elif component.valueType == 4:
-            print("external record value type todo")
-        else:
-            print("fail ")
+    Args:
+        bytecodes (bytecodes): The bytecodes object
+
+    Returns:
+        LiteralType or String: The LiteralType or and identifier
+    """
+    variant = bytecodes.read_u8()
+    if variant == 0:
+        return read_plaintext_literal(bytecodes)
+    elif variant == 1:
+        return utils.read_identifier(bytecodes)
+
+
+def read_value_type(bytecodes):
+    """Get the attribyte type
+
+    Args:
+        bytecodes (bytecodes): The bytecodes object
+
+    Returns:
+        attributeType: the AttributeType
+    """
+    attribute_type = attributeType(bytecodes.read_u8())
+    return attribute_type

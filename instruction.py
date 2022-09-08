@@ -1,4 +1,10 @@
 from enum import Enum, auto
+import bytecodes
+from register import register
+from IOregister import IOregister
+import valueType
+import utils
+from operand import Operands, Operand, OperandType
 
 
 class Opcode(Enum):
@@ -60,190 +66,170 @@ class Opcode(Enum):
     Xor = auto()
 
 
-UNARY = [Opcode.Abs, Opcode.AbsWrapped, Opcode.Double, Opcode.Inv, Opcode.Neg, Opcode.Not, Opcode.Square,
-        Opcode.SquareRoot, Opcode.HashBHP256, Opcode.HashBHP512, Opcode.HashBHP768, Opcode.HashBHP1024,
-        Opcode.HashPED64, Opcode.HashPED128, Opcode.HashPSD2, Opcode.HashPSD4, Opcode.HashPSD8]
+UNARY = [
+    Opcode.Abs,
+    Opcode.AbsWrapped,
+    Opcode.Double,
+    Opcode.Inv,
+    Opcode.Neg,
+    Opcode.Not,
+    Opcode.Square,
+    Opcode.SquareRoot,
+    Opcode.HashBHP256,
+    Opcode.HashBHP512,
+    Opcode.HashBHP768,
+    Opcode.HashBHP1024,
+    Opcode.HashPED64,
+    Opcode.HashPED128,
+    Opcode.HashPSD2,
+    Opcode.HashPSD4,
+    Opcode.HashPSD8,
+]
 
-BINARY = [Opcode.Add, Opcode.AddWrapped, Opcode.Sub, Opcode.SubWrapped, Opcode.Mul, Opcode.MulWrapped,
-        Opcode.Div, Opcode.DivWrapped, Opcode.Rem, Opcode.RemWrapped, Opcode.Pow, Opcode.PowWrapped,
-        Opcode.Shl, Opcode.ShlWrapped, Opcode.Shr, Opcode.ShrWrapped, Opcode.And, Opcode.Or, Opcode.Nand,
-        Opcode.Nor, Opcode.GreaterThan, Opcode.GreaterThanOrEqual, Opcode.LessThan, Opcode.LessThanOrEqual,
-        Opcode.IsEq, Opcode.IsNeq, Opcode.CommitBHP256, Opcode.CommitBHP512, Opcode.CommitBHP768,
-        Opcode.CommitBHP1024, Opcode.CommitPED64, Opcode.CommitPED128]
+BINARY = [
+    Opcode.Add,
+    Opcode.AddWrapped,
+    Opcode.Sub,
+    Opcode.SubWrapped,
+    Opcode.Mul,
+    Opcode.MulWrapped,
+    Opcode.Div,
+    Opcode.DivWrapped,
+    Opcode.Rem,
+    Opcode.RemWrapped,
+    Opcode.Pow,
+    Opcode.PowWrapped,
+    Opcode.Shl,
+    Opcode.ShlWrapped,
+    Opcode.Shr,
+    Opcode.ShrWrapped,
+    Opcode.And,
+    Opcode.Xor,
+    Opcode.Or,
+    Opcode.Nand,
+    Opcode.Nor,
+    Opcode.GreaterThan,
+    Opcode.GreaterThanOrEqual,
+    Opcode.LessThan,
+    Opcode.LessThanOrEqual,
+    Opcode.IsEq,
+    Opcode.IsNeq,
+    Opcode.CommitBHP256,
+    Opcode.CommitBHP512,
+    Opcode.CommitBHP768,
+    Opcode.CommitBHP1024,
+    Opcode.CommitPED64,
+    Opcode.CommitPED128,
+]
 
 ASSERT = [Opcode.AssertEq, Opcode.AssertNeq]
 
-class Operand(Enum):
-    Literal = 0
-    Register = 1
-    ProgramID = 2
-    Caller = 3
-
-
-class Literal(Enum):
-    address = (0,)
-    boolean = 1
-    field = 2
-    group = 3
-    i8 = 4
-    i16 = 5
-    i32 = 6
-    i64 = 7
-    i128 = 8
-    u8 = 9
-    u16 = 10
-    u32 = 11
-    u64 = 12
-    u128 = 13
-    scalar = 14
-    string = 15
-
 
 class instruction:
+    """
+    The instruction class
+    """
+
     def __init__(self) -> None:
         self.bytecodes = None
+        self.opcode = None
+        self.operands = None
+        self.output = None
+        self.cast = None
 
-    def read_literal(self, type):
-        res = "UNHANDLED LITERAL TYPE"
-        if type == Literal.i128 or type == Literal.u128:
-            res = int.from_bytes(self.bytecodes[:16], "little")
-            self.bytecodes = self.bytecodes[16:]
+    def fmt(self):
+        """Get the disassembly of the instruction
 
-        elif type == Literal.i64 or type == Literal.u64:
-            res = int.from_bytes(self.bytecodes[:8], "little")
-            self.bytecodes = self.bytecodes[8:]
-
-        elif type == Literal.i32 or type == Literal.u32:
-            res = int.from_bytes(self.bytecodes[:4], "little")
-            self.bytecodes = self.bytecodes[4:]
-
-        elif type == Literal.i16 or type == Literal.u16:
-            res = int.from_bytes(self.bytecodes[:2], "little")
-            self.bytecodes = self.bytecodes[2:]
-
-        elif type == Literal.i8 or type == Literal.u8:
-            res = int.from_bytes(self.bytecodes[:1], "little")
-            self.bytecodes = self.bytecodes[1:]
-
-        return res
-
-    """
-    Seeems like there's 2 convention for storing strings, so to handle it
-    we just give the number needed when its not the first case
-    """
-    def read_strings(self, number_of_string = 0):
-        if (number_of_string == 0):
-            number_of_string = int.from_bytes(self.bytecodes[:2], "little")
-            self.bytecodes = self.bytecodes[2:]
-        line = []
-        for _ in range(number_of_string):
-            size_of_string = int.from_bytes(self.bytecodes[:1], "little")
-            self.bytecodes = self.bytecodes[1:]
-            string = self.bytecodes[:size_of_string].decode("ascii")
-            self.bytecodes = self.bytecodes[size_of_string:]
-            line.append(string)
-        return line
-
-    def read_register(self):
-        content_type = int.from_bytes(
-            self.bytecodes[:1], "little"
-        )  # 0 if immediate, 1 if its like r0.zzz.bbb ...
-        self.bytecodes = self.bytecodes[1:]
-        register = int.from_bytes(self.bytecodes[:1], "little")
-        self.bytecodes = self.bytecodes[1:]
-        line = f"r{register}"
-        if content_type == 1:
-            for string in self.read_strings():
-                line += f'.{string}'
-        return line
-
-    # Output of an instruction can only be a register 
-    def read_instruction_output(self):
-        output = self.read_register()
-        return output
-
-
-
-    def get_operands(self, number_of_operand):
-        operands = []
-        
-        for _ in range(number_of_operand):
-            op_type = Operand(int.from_bytes(self.bytecodes[:1], "little"))
-            self.bytecodes = self.bytecodes[1:]
-            if op_type == Operand.Literal:
-                literal_type = Literal(
-                    int.from_bytes(self.bytecodes[:2], "little")
-                )
-                self.bytecodes = self.bytecodes[2:]
-                value = self.read_literal(literal_type)
-                operands.append("{}{}".format(value, literal_type.name))
-
-            elif op_type == Operand.Register:
-                line = self.read_register()
-                operands.append(line)
-            
-            elif op_type == Operand.ProgramID:
-                name = self.read_strings(1)[0]
-                res = name
-                while self.bytecodes[0] != 0:
-                    tail = self.read_strings(1)[0]
-                    res += f'.{tail}'
-                self.bytecodes = self.bytecodes[1:] # The one from the loop
-                operands.append(f"{res}")
-
-        return operands
-
-
-    def read_binary_instruction(self, opcode):
-        operands = self.get_operands(2)
-
-        output = self.read_instruction_output()
-
-        print(f"{opcode.name} {operands[0]} {operands[1]} into {output}")
-
-    def read_variadic_instruction(self, opcode):
-        number_of_operand = int.from_bytes(self.bytecodes[:1], "little")
-        self.bytecodes = self.bytecodes[1:]
-        operands = ""
-
-        for string in self.get_operands(number_of_operand):
-            operands += " " + string
-
-        # Get output register
-        output = self.read_instruction_output()
-
-        # Get casted type (Should be a single string)
-        number_of_string = self.bytecodes[0]
-        self.bytecodes = self.bytecodes[1:]
-        cast = self.read_strings(number_of_string)
-
-        print(f"{opcode.name}{operands} into {output} as {cast[0]}")
-
-    def read_cast_instruction(self):
-        return self.read_variadic_instruction(Opcode.Cast)
-
-    def read_function_instructions(self):
-        index = int.from_bytes(self.bytecodes[:2], "little")
-        self.bytecodes = self.bytecodes[2:]
-        opcode = Opcode(index)
-
-        # Need to make lists of function using the same pattern as xor (input1, input2, output) to dont decompile wrongly
-        if opcode is Opcode.Cast:
-            self.read_cast_instruction()
-        elif opcode is Opcode.Call:
-            print("UNTESTED - UNIMPLEMENTED")
-        elif opcode is Opcode.Ternary:
-            print("UNTESTED - UNIMPLEMENTED")
-        elif opcode in ASSERT:
-            print("UNTESTED - UNIMPLEMENTED")
-        elif opcode in UNARY:
-            print("UNTESTED - UNIMPLEMENTED")
+        Returns:
+            String: The disassembly of the instruction
+        """
+        if self.opcode is Opcode.Cast:
+            # The output register of the cast is not of a register type
+            return (
+                f"Cast {self.operands.fmt()} into r{self.output} as {self.cast}"
+            )
+        elif self.opcode is Opcode.Call:
+            self.disass = "UNTESTED - UNIMPLEMENTED"
+        elif self.opcode is Opcode.Ternary:
+            self.disass = "UNTESTED - UNIMPLEMENTED"
+        elif self.opcode in ASSERT:
+            self.disass = "UNTESTED - UNIMPLEMENTED"
+        elif self.opcode in UNARY:
+            return f"{self.opcode.name} {self.operands.fmt()} into {self.output.fmt()}"
+        elif self.opcode in BINARY:
+            return f"{self.opcode.name} {self.operands.fmt()} into {self.output.fmt()}"
         else:
-            self.read_binary_instruction(opcode)
+            self.disass = "UNKNOWN opcode"
 
-    def disassemble_instruction(self, bytes):
-        self.bytecodes = bytes
-        self.read_function_instructions()
-        rest_of_bytecodes = self.bytecodes
-        self.bytecodes = bytes[: len(bytes) - len(rest_of_bytecodes)]
-        return rest_of_bytecodes
+    def read_binary_instruction(self, bytecodes):
+        """Read binary instruction
+
+        Args:
+            bytecodes (bytecodes): The bytecodes object
+        """
+        self.operands = Operands(2, bytecodes, True)
+        self.output = register(bytecodes)
+
+    def read_unary_instruction(self, bytecodes):
+        """Read unary instruction
+
+        Args:
+            bytecodes (bytecodes): The bytecodes object
+        """
+        self.operands = Operands(1, bytecodes, True)
+        self.output = register(bytecodes)
+
+    def read_cast_instruction(self, bytecodes):
+        """Read CAST instruction
+
+        Args:
+            bytecodes (bytecodes): The bytecodes object
+
+        Returns:
+            String: Return a string containing an error
+        """
+        number_of_operand = bytecodes.read_u8()
+
+        if number_of_operand == 0 or number_of_operand > 8:
+            print(f"Invalid cast ({number_of_operand} parameters)")
+
+        self.operands = Operands(number_of_operand, bytecodes, True)
+
+        # Get output register, its formatted like an IO register
+        if bytecodes.read_u8() != 0:
+            return "Error in cast"
+
+        self.output = bytecodes.read_u8()
+
+        # Get casted type (Should be a single string) but stored weirdly, need to improve
+        valtype = bytecodes.peek()
+        self.cast = "ERROR PARSING CAST TYPE"
+        if valtype == 0:
+            bytecodes.read_u8()
+            self.cast = valueType.read_plaintext(bytecodes)
+        elif valtype == 1:
+            self.cast = valueType.read_plaintext(bytecodes)
+
+    def disassemble_instruction(self, bytecodes):
+        """Disassemble the instruction
+
+        Args:
+            bytecodes (bytecodes): The bytecodes object
+        """
+        index = bytecodes.read_u16()
+        self.opcode = Opcode(index)
+        # Need to make lists of function using the same pattern as xor (input1, input2, output) to dont decompile wrongly
+        if self.opcode is Opcode.Cast:
+            self.read_cast_instruction(bytecodes)
+        elif self.opcode is Opcode.Call:
+            self.disass = "UNTESTED - UNIMPLEMENTED"
+        elif self.opcode is Opcode.Ternary:
+            self.disass = "UNTESTED - UNIMPLEMENTED"
+        elif self.opcode in ASSERT:
+            self.disass = "UNTESTED - UNIMPLEMENTED"
+        elif self.opcode in UNARY:
+            self.read_unary_instruction(bytecodes)
+        elif self.opcode in BINARY:
+            self.read_binary_instruction(bytecodes)
+        else:
+            self.disass = "UNKNOWN opcode"
