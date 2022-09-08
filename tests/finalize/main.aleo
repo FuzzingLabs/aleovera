@@ -21,3 +21,6 @@ finalize transfer_public_to_private:
     input r0 as address.public;
     input r1 as u64.public;
     decrement account[r0] by r1;
+    add r1 r1 into r2;
+    increment account[r0] by r1;
+    output r2 as u64.public;

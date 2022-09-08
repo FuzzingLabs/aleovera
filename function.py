@@ -82,12 +82,16 @@ class function:
 
         for instruction in self.instructions:
             xprint(instruction.fmt())
-        
+
         for i in range(self.number_outputs):
             self.registers[i + self.number_inputs].pretty_print()
 
         if self.finalizes:
-            xprint(f"finalize {self.finalizes[0].operands.fmt(self.identifier)}")
+            xprint(f"finalize {self.finalizes[0].operands.fmt()}")
+        print()
+        utils.tab -= 1
+        for finalize in self.finalizes:
+            finalize.function.pretty_print()
 
         utils.tab -= 1
 
