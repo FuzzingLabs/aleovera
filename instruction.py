@@ -161,7 +161,6 @@ class instruction:
         else:
             self.disass = "UNKNOWN opcode"
 
- 
     def read_binary_instruction(self, bytecodes):
         """Read binary instruction
 
