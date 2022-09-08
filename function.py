@@ -87,7 +87,7 @@ class function:
             self.registers[i + self.number_inputs].pretty_print()
 
         if self.finalizes:
-            xprint(f"finalize{self.finalizes[0].operands.fmt()}")
+            xprint(f"finalize {self.finalizes[0].operands.fmt(self.identifier)}")
             print("PARSE THE FINALIZE FUNCTION")
 
         utils.tab -= 1

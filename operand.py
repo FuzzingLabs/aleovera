@@ -114,12 +114,12 @@ class Operands:
     def __init__(self, number_of_operand, bytecodes, read_value=False) -> None:
         self.operands = self.get_operands(number_of_operand, bytecodes, read_value)
 
-    def fmt(self):
+    def fmt(self, function_name=None):
         res = ""
         if len(self.operands) != 0:
-            res = self.operands[0].fmt()
+            res = self.operands[0].fmt(function_name)
         for operand in self.operands[1:]:
-            res += f" {operand.fmt()}"
+            res += f" {operand.fmt(function_name)}"
         return res
 
 
