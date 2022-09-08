@@ -10,7 +10,7 @@ def xprint(*args, end="\n"):
         end (str, optional): Used in case of multiple print in the same line that does not need a newline. Defaults to "\n".
     """
     tab_str = "    " * tab
-    print(tab_str + "".join(map(str, args)), end=end)
+    print(tab_str + "".join(map(str, args)).lower(), end=end)
 
 
 def read_variable_length_integer(bytecodes):
@@ -64,7 +64,8 @@ def read_identifier(bytecodes):
     identifier = bytecodes.read_n(len_identifier).decode("utf-8")
     return identifier
 
+
 def read_locator(bytecodes):
     id = read_identifier(bytecodes)
-    resource =read_identifier(bytecodes)
+    resource = read_identifier(bytecodes)
     return [id, resource]

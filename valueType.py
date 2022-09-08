@@ -45,6 +45,12 @@ class attributeType(Enum):
     externalrecord = auto()
 
 
+class attributeType_finalize(Enum):
+    public = 0
+    record = auto()
+    externalrecord = auto()
+
+
 def read_plaintext_literal(bytecodes):
     """Get the literal type
 
@@ -73,6 +79,24 @@ def read_plaintext(bytecodes):
         return read_plaintext_literal(bytecodes)
     elif variant == 1:
         return utils.read_identifier(bytecodes)
+
+
+def read_finalize_value_type(bytecodes):
+    """Get the attribyte type of a finalize IOregister
+
+    Args:
+        bytecodes (bytecodes): The bytecodes object
+
+    Returns:
+        attributeType: the AttributeType
+    """
+    attribute_type = attributeType_finalize(bytecodes.read_u8())
+    if attribute_type == attributeType_finalize.public:
+        return attributeType.public
+    if attribute_type == attributeType_finalize.record:
+        return attributeType.record
+    if attribute_type == attributeType_finalize.externalrecord:
+        return attributeType.externalrecord
 
 
 def read_value_type(bytecodes):

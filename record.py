@@ -30,11 +30,11 @@ class record:
         """
         Pretty print all the content of the record
         """
-        xprint(f"record {self.identifier}")
+        xprint(f"record {self.identifier}:")
         utils.tab += 1
         for new_entry in self.entries:
             xprint(
-                f"{new_entry.identifier} as {new_entry.value}.{new_entry.attribute_type.name} "
+                f"{new_entry.identifier} as {new_entry.value}.{new_entry.attribute_type.name};"
             )
         utils.tab -= 1
 

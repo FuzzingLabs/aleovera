@@ -9,8 +9,9 @@ class IOregister:
     The IOregister class. Can be an input or an output.
     """
 
-    def __init__(self, IO_type, bytecodes) -> None:
+    def __init__(self, IO_type, bytecodes, finalize=False) -> None:
         self.IO_type = IO_type
+        self.finalize = finalize
         self.value = None
         self.attribute_type = None
         self.register = None
@@ -25,6 +26,7 @@ class IOregister:
             res += f"{self.value}.{valueType.attributeType(self.attribute_type).name}"
         else:
             res += f"{self.value}"
+        res += ";"
         xprint(res)
 
     def disassemble_IOregister(self, bytecodes):
@@ -35,7 +37,10 @@ class IOregister:
         """
         self.register = register(bytecodes)
         ### get valueType
-        self.attribute_type = valueType.read_value_type(bytecodes)
+        if self.finalize:
+            self.attribute_type = valueType.read_finalize_value_type(bytecodes)
+        else:
+            self.attribute_type = valueType.read_value_type(bytecodes)
         if (
             self.attribute_type == valueType.attributeType.constant
             or self.attribute_type == valueType.attributeType.public
