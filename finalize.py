@@ -1,6 +1,6 @@
 from utils import xprint
 from register import register
-from operand import operand
+from operand import Operand, Operands, OperandType
 import valueType
 
 
@@ -42,4 +42,4 @@ class finalize:
 
     def disassemble_finalize(self, bytecodes):
         self.num_operands = bytecodes.read_u8()
-        self.operands = operand(self.num_operands, bytecodes, False)
+        self.operands = Operands(self.num_operands, bytecodes, False)

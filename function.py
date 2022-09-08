@@ -28,9 +28,9 @@ class function:
         new_register = IOregister(IO_type, bytecodes)
         self.registers.append(new_register)
 
-    def read_instructions(self, bytecodes):
+    def read_instruction(self, bytecodes):
         new_instruction = instruction()
-        new_instruction.disassemble_instructions(bytecodes)
+        new_instruction.disassemble_instruction(bytecodes)
         self.instructions.append(new_instruction)
 
     def read_finalize(self, bytecodes):
@@ -47,7 +47,7 @@ class function:
             self.registers[i].pretty_print()
 
         for instruction in self.instructions:
-            xprint(instruction.disass)
+            xprint(instruction.fmt())
         
         for i in range(self.number_outputs):
             self.registers[i + self.number_inputs].pretty_print()
@@ -68,7 +68,7 @@ class function:
         ###instructions
         self.number_instructions = self.read_function_number_instructions(bytecodes)
         for _ in range(self.number_instructions):
-            self.read_instructions(bytecodes)
+            self.read_instruction(bytecodes)
         ###outputs
         self.number_outputs = self.read_function_number_IOregister(bytecodes)
         for _ in range(self.number_outputs):
