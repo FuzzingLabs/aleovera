@@ -1,4 +1,4 @@
-from utils import xprint
+from utils import xadd
 from register import register
 import utils
 import valueType
@@ -27,7 +27,7 @@ class IOregister:
         else:
             res += f"{self.value}"
         res += ";"
-        xprint(res)
+        xadd(res)
 
     def disassemble_IOregister(self, bytecodes):
         """Disassemble the IOregister

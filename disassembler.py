@@ -3,6 +3,7 @@ from record import record
 from interface import interface
 from mapping import mapping
 from utils import xprint
+from utils import xadd
 from bytecodes import bytecodes
 import utils
 
@@ -10,6 +11,7 @@ import utils
 class aleodisassembler:
     def __init__(self, bytes) -> None:
         utils.tab_init()
+        utils.aleo_output_init()
         self.bytecodes = bytecodes(bytes)
         self.version = None
         self.name = ""
@@ -47,7 +49,7 @@ class aleodisassembler:
         """
         Read the imports in the header
         """
-        for i in range(self.number_imports):
+        for _ in range(self.number_imports):
             self.imports.append(self.read_programID)
 
     def read_number_components(self):
@@ -90,7 +92,7 @@ class aleodisassembler:
         """
         Read the components
         """
-        xprint("")
+        xadd("")
         for _ in range(self.number_components):
             type = self.bytecodes.read_u8()
             if type == 0:
@@ -104,8 +106,8 @@ class aleodisassembler:
             elif type == 4:
                 self.read_function("function")
             else:
-                xprint("type does not exist : ", type)
-            xprint("")
+                xadd("type does not exist : ", type)
+            xadd("")
 
     def debug_print(self):
         xprint("version : ", self.version)
@@ -118,10 +120,11 @@ class aleodisassembler:
         """
         self.read_version()
         self.read_programID()
-        xprint("program ", self.name + "." + self.network + ";")
+        xadd("program ", self.name + "." + self.network + ";")
         self.read_number_program_imports()
         self.read_imports()
         for imp in self.imports:
-            print(f"import {imp}")
+            xadd(f"import {imp}")
         self.read_number_components()
         self.read_components()
+        print(utils.aleo_output)

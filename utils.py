@@ -3,6 +3,17 @@ def tab_init():
     tab = 0
 
 
+def aleo_output_init():
+    global aleo_output
+    aleo_output = ""
+
+
+def xadd(*args, end="\n"):
+    global aleo_output
+    tab_str = "    " * tab
+    aleo_output = aleo_output + tab_str + "".join(map(str, args)).lower() + end
+
+
 def xprint(*args, end="\n"):
     """Pretty printer
 

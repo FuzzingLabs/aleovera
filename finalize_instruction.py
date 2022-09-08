@@ -1,11 +1,7 @@
 from enum import Enum, auto
-import bytecodes
-from register import register
-from IOregister import IOregister
-import valueType
 import utils
-from operand import Operands, Operand, OperandType
-from utils import xprint
+from operand import Operands
+from utils import xadd
 
 
 class Opcode(Enum):

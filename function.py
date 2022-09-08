@@ -1,7 +1,7 @@
 from IOregister import IOregister
 from instruction import instruction
-from utils import xprint
 from finalize import finalize
+from utils import xadd
 import utils
 
 
@@ -75,20 +75,20 @@ class function:
         """
         Pretty print all the content of the function
         """
-        xprint(f"{self.type} {self.identifier}:")
+        xadd(f"{self.type} {self.identifier}:")
         utils.tab += 1
         for i in range(self.number_inputs):
             self.registers[i].pretty_print()
 
         for instruction in self.instructions:
-            xprint(instruction.fmt())
+            xadd(instruction.fmt())
 
         for i in range(self.number_outputs):
             self.registers[i + self.number_inputs].pretty_print()
 
         if self.finalizes:
-            xprint(f"finalize {self.finalizes[0].operands.fmt()};")
-        print()
+            xadd(f"finalize {self.finalizes[0].operands.fmt()};")
+        xadd("")
         utils.tab -= 1
         for finalize in self.finalizes:
             finalize.function.pretty_print()

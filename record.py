@@ -1,6 +1,4 @@
-from enum import Enum
-from utils import xprint
-import bytecodes
+from utils import xadd
 import valueType
 import utils
 
@@ -30,10 +28,10 @@ class record:
         """
         Pretty print all the content of the record
         """
-        xprint(f"record {self.identifier}:")
+        xadd(f"record {self.identifier}:")
         utils.tab += 1
         for new_entry in self.entries:
-            xprint(
+            xadd(
                 f"{new_entry.identifier} as {new_entry.value}.{new_entry.attribute_type.name};"
             )
         utils.tab -= 1

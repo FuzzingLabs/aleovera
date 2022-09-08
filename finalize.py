@@ -1,10 +1,8 @@
-from utils import xprint
-from register import register
+from utils import xadd
 from IOregister import IOregister
 from instruction import instruction
 from finalize_instruction import finalize_instruction
-from operand import Operand, Operands, OperandType
-import valueType
+from operand import Operands
 import utils
 import sys
 
@@ -83,14 +81,13 @@ class finalize_function:
         """
         Pretty print all the content of the function
         """
-        res = ""
-        xprint(f"finalize {self.identifier}:")
+        xadd(f"finalize {self.identifier}:")
         utils.tab += 1
         for i in range(self.number_inputs):
             self.registers[i].pretty_print()
 
         for instruction in self.instructions:
-            xprint(instruction.fmt())
+            xadd(instruction.fmt())
 
         for i in range(self.number_outputs):
             self.registers[i + self.number_inputs].pretty_print()

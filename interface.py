@@ -1,5 +1,4 @@
-from enum import Enum
-from utils import xprint
+from utils import xadd
 import valueType
 import utils
 
@@ -38,10 +37,10 @@ class interface:
         """
         Pretty print all the content of the interface
         """
-        xprint(f"identifier {self.identifier}")
+        xadd(f"identifier {self.identifier}")
         utils.tab += 1
         for new_entry in self.entries:
-            xprint(f"{new_entry.identifier} as {new_entry.value}")
+            xadd(f"{new_entry.identifier} as {new_entry.value}")
         utils.tab -= 1
 
     def disassemble_interface(self, bytecodes):

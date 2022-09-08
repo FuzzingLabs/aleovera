@@ -1,4 +1,4 @@
-from utils import xprint
+from utils import xadd
 import valueType
 import utils
 
@@ -29,7 +29,7 @@ class key_value:
         elif variant == 2:
             self.attribute_type = valueType.attributeType(4).name
         else:
-            xprint("error")
+            print("error")
         self.value = valueType.read_plaintext(bytecodes)
 
 
@@ -48,12 +48,12 @@ class mapping:
         """
         Pretty print all the content of the mapping
         """
-        xprint(f"mapping {self.identifier}:")
+        xadd(f"mapping {self.identifier}:")
         utils.tab += 1
-        xprint(
+        xadd(
             f"key {self.key.identifier} as {self.key.value}.{self.key.attribute_type};"
         )
-        xprint(
+        xadd(
             f"value {self.value.identifier} as {self.value.value}.{self.value.attribute_type};"
         )
         utils.tab -= 1
