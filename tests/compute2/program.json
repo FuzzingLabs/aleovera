@@ -1,0 +1,10 @@
+{
+    "program": "compute2.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkpJKBf1SpMFCVVE6dhSpi42TWJ41EfvbnvD4RboSLbMMbc",
+        "address": "aleo1mgda3rwesv9v64rrugk02kk05t5t2x332kl5etk6fe9uxhtwkyqsxeg7cp"
+    },
+    "license": "MIT"
+}

@@ -8,13 +8,13 @@ def build_tests():
     for folder in subfolders:
         os.chdir(folder)
         subprocess.run("aleo build", shell=True, check=True)
-        p = subprocess.Popen(
+        """p = subprocess.Popen(
             "python3 ../../main.py -f build/main.avm".split(" "),
             stdout=subprocess.PIPE,
         )
         out, err = p.communicate()
         print(out)
-        print(err)
+        print(err)"""
         os.chdir(cwd)
 
 

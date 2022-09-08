@@ -1,0 +1,10 @@
+{
+    "program": "compute_add.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkpG66B9oVCmw9rkjqvhA2WJTHEgmTTSTHd1pMao4oUK76N",
+        "address": "aleo1kzvktehx4fct3x449yhjms239ddzkhp442z388tzhf22u4qvhqxq4jqtqt"
+    },
+    "license": "MIT"
+}

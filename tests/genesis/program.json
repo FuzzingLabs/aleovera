@@ -1,0 +1,10 @@
+{
+    "program": "genesis.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkpJbBCKvvt7EAFAiKrhh9eaDZbfEu3sgsKpsRZDeRbxaVR",
+        "address": "aleo1e8sfgmxx6rcewwcua0v5q4wva46n4a8s6yl3ll2wa0c4ggzulupqx2dslw"
+    },
+    "license": "MIT"
+}
