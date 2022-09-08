@@ -82,7 +82,7 @@ class Operand:
             self.value = register(bytecodes)
             
         elif op_type == OperandType.ProgramID:
-            self.value = utils.read_locator()
+            self.value = utils.read_locator(bytecodes)
 
         elif op_type == OperandType.Caller:
             pass
