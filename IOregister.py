@@ -5,6 +5,10 @@ import valueType
 
 
 class IOregister:
+    """
+    The IOregister class. Can be an input or an output.
+    """
+
     def __init__(self, IO_type, bytecodes) -> None:
         self.IO_type = IO_type
         self.value = None
@@ -13,6 +17,9 @@ class IOregister:
         self.disassemble_IOregister(bytecodes)
 
     def pretty_print(self):
+        """
+        Pretty print all the content of the IOregister
+        """
         res = f"{self.IO_type} r{self.register.locator} as "
         if self.attribute_type != valueType.attributeType.record:
             res += f"{self.value}.{valueType.attributeType(self.attribute_type).name}"
@@ -21,6 +28,11 @@ class IOregister:
         xprint(res)
 
     def disassemble_IOregister(self, bytecodes):
+        """Disassemble the IOregister
+
+        Args:
+            bytecodes (bytecodes): The bytecodes object
+        """
         self.register = register(bytecodes)
         ### get valueType
         self.attribute_type = valueType.read_value_type(bytecodes)

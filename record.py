@@ -6,6 +6,10 @@ import utils
 
 
 class entry:
+    """
+    Element of a record
+    """
+
     def __init__(self) -> None:
         self.identifier = None
         self.value = None
@@ -13,12 +17,19 @@ class entry:
 
 
 class record:
+    """
+    Record class
+    """
+
     def __init__(self, bytecodes) -> None:
         self.entries = []
         self.identifier = None
         self.disassemble_record(bytecodes)
 
     def pretty_print(self):
+        """
+        Pretty print all the content of the record
+        """
         xprint(f"record {self.identifier}")
         utils.tab += 1
         for new_entry in self.entries:
@@ -28,6 +39,15 @@ class record:
         utils.tab -= 1
 
     def set_record_gates_owner(self, identifier, bytecodes):
+        """Create the entry for the gates or the owner based on the identifier
+
+        Args:
+            identifier (String): Determines if it is an owner or a gates entry
+            bytecodes (bytecodes): The bytecodes object
+
+        Returns:
+            entry: The new entry
+        """
         new_entry = entry()
         new_entry.identifier = identifier
         value = bytecodes.read_u8()
@@ -40,6 +60,11 @@ class record:
         return new_entry
 
     def disassemble_record(self, bytecodes):
+        """Disassemble the record
+
+        Args:
+            bytecodes (bytecodes): The bytecodes object
+        """
         self.identifier = utils.read_identifier(bytecodes)
         owner = self.set_record_gates_owner("owner", bytecodes)
         gates = self.set_record_gates_owner("gates", bytecodes)

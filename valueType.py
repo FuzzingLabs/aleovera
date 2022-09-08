@@ -46,12 +46,28 @@ class attributeType(Enum):
 
 
 def read_plaintext_literal(bytecodes):
+    """Get the literal type
+
+    Args:
+        bytecodes (bytecodes): The bytecodes object
+
+    Returns:
+        LiteralType: the LiteralType
+    """
     res = bytecodes.read_u16()
     res = LiteralType(res).name
     return res
 
 
 def read_plaintext(bytecodes):
+    """Read an identifier or get the LiteralType based on the first byte
+
+    Args:
+        bytecodes (bytecodes): The bytecodes object
+
+    Returns:
+        LiteralType or String: The LiteralType or and identifier
+    """
     variant = bytecodes.read_u8()
     if variant == 0:
         return read_plaintext_literal(bytecodes)
@@ -60,5 +76,13 @@ def read_plaintext(bytecodes):
 
 
 def read_value_type(bytecodes):
+    """Get the attribyte type
+
+    Args:
+        bytecodes (bytecodes): The bytecodes object
+
+    Returns:
+        attributeType: the AttributeType
+    """
     attribute_type = attributeType(bytecodes.read_u8())
     return attribute_type
