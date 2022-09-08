@@ -2,8 +2,7 @@ from function import function
 from record import record
 from interface import interface
 from mapping import mapping
-from utils import xprint
-from utils import xadd
+from utils import xprint, xadd, ProgramId
 from bytecodes import bytecodes
 import utils
 
@@ -14,8 +13,7 @@ class aleodisassembler:
         utils.aleo_output_init()
         self.bytecodes = bytecodes(bytes)
         self.version = None
-        self.name = ""
-        self.network = ""
+        self.program_id = None
         self.number_imports = None
         self.imports = []
         self.number_components = None
@@ -33,11 +31,7 @@ class aleodisassembler:
         """
         Read the programID in the header
         """
-        len_name = self.bytecodes.read_u8()
-        self.name = self.bytecodes.read_n(len_name).decode("utf-8")
-
-        len_network = self.bytecodes.read_u8()
-        self.network = self.bytecodes.read_n(len_network).decode("utf-8")
+        self.program_id = ProgramId(self.bytecodes)
 
     def read_number_program_imports(self):
         """
@@ -50,7 +44,7 @@ class aleodisassembler:
         Read the imports in the header
         """
         for _ in range(self.number_imports):
-            self.imports.append(self.read_programID)
+            self.imports.append(ProgramId(self.bytecodes))
 
     def read_number_components(self):
         """
@@ -120,11 +114,11 @@ class aleodisassembler:
         """
         self.read_version()
         self.read_programID()
-        xadd("program ", self.name + "." + self.network + ";")
+        xadd(f"program {self.program_id.fmt()};")
         self.read_number_program_imports()
         self.read_imports()
         for imp in self.imports:
-            xadd(f"import {imp}")
+            xadd(f"import {imp.fmt()}")
         self.read_number_components()
         self.read_components()
         print(utils.aleo_output)

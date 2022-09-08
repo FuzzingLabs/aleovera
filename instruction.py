@@ -131,7 +131,6 @@ class instruction:
     """
 
     def __init__(self) -> None:
-        self.bytecodes = None
         self.opcode = None
         self.operands = None
         self.output = None
@@ -235,7 +234,7 @@ class instruction:
         if variant == 1:
             self.callee = [utils.read_identifier(bytecodes)]
         else:
-            self.callee = utils.read_locator()
+            self.callee = utils.read_locator(bytecodes)
         
         number_of_operand = bytecodes.read_u8()
         self.operands = Operands(number_of_operand, bytecodes, True)

@@ -23,6 +23,22 @@ def xprint(*args, end="\n"):
     tab_str = "    " * tab
     print(tab_str + "".join(map(str, args)).lower(), end=end)
 
+class ProgramId():
+    def __init__(self, bytecodes) -> None:
+        self.name = None
+        self.network = None
+        self.parse_program_id(bytecodes)
+    
+    def parse_program_id(self, bytecodes):
+        len_name = bytecodes.read_u8()
+        self.name = bytecodes.read_n(len_name).decode("utf-8")
+
+        len_network = bytecodes.read_u8()
+        self.network = bytecodes.read_n(len_network).decode("utf-8")
+
+    def fmt(self):
+        return f"{self.name}.{self.network}"
+
 
 def read_variable_length_integer(bytecodes):
     """Read the size of a variable based on the first byte
