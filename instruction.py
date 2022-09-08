@@ -143,23 +143,30 @@ class instruction:
         Returns:
             String: The disassembly of the instruction
         """
+
+        # If is sorted by from smallest array to the biggest
         if self.opcode is Opcode.Cast:
             # The output register of the cast is not of a register type
             return (
-                f"Cast {self.operands.fmt()} into r{self.output} as {self.cast}"
+                f"Cast {self.operands.fmt()} into r{self.output} as {self.cast};"
             )
         elif self.opcode is Opcode.Call:
             self.disass = "UNTESTED - UNIMPLEMENTED"
-        elif self.opcode is Opcode.Ternary:
-            self.disass = "UNTESTED - UNIMPLEMENTED"
         elif self.opcode in ASSERT:
-            self.disass = "UNTESTED - UNIMPLEMENTED"
-        elif self.opcode in UNARY:
-            return f"{self.opcode.name} {self.operands.fmt()} into {self.output.fmt()}"
-        elif self.opcode in BINARY:
-            return f"{self.opcode.name} {self.operands.fmt()} into {self.output.fmt()}"
+            return f"{self.opcode.name} {self.operands.fmt()};"
+        elif self.opcode is Opcode.Ternary or self.opcode in UNARY or self.opcode in BINARY:
+            return f"{self.opcode.name} {self.operands.fmt()} into {self.output.fmt()};"
         else:
             self.disass = "UNKNOWN opcode"
+
+    def read_ternary_instruction(self, bytecodes):
+        """Read ternary instruction
+
+        Args:
+            bytecodes (bytecodes): The bytecodes object
+        """
+        self.operands = Operands(2, bytecodes, True)
+        self.output = register(bytecodes)
 
     def read_binary_instruction(self, bytecodes):
         """Read binary instruction
@@ -209,6 +216,15 @@ class instruction:
             self.cast = valueType.read_plaintext(bytecodes)
         elif valtype == 1:
             self.cast = valueType.read_plaintext(bytecodes)
+
+    def read_assert(self, bytecodes):
+        """Read assert instruction
+
+        Args:
+            bytecodes (bytecodes): The bytecodes object
+        """
+        self.operands = Operands(2, bytecodes, True)
+
 
     def disassemble_instruction(self, bytecodes):
         """Disassemble the instruction
