@@ -1,4 +1,3 @@
-// The 'record_and_token.aleo' program.
 program record_and_token.aleo;
 
 record token:

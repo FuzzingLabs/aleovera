@@ -1,4 +1,3 @@
-// The 'compute_add.aleo' program.
 program compute_add.aleo;
 
 function compute:

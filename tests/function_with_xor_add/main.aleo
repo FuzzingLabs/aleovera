@@ -1,4 +1,3 @@
-// The 'function_with_xor_add.aleo' program.
 program function_with_xor_add.aleo;
 
 function hello:

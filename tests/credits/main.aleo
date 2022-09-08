@@ -1,4 +1,3 @@
-// The 'credits.aleo' program.
 program credits.aleo;
 
 record credits:

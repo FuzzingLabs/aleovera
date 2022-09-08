@@ -1,4 +1,3 @@
-// The 'token1.aleo' program.
 program token1.aleo;
 
 record token:
@@ -6,7 +5,6 @@ record token:
     gates as u64.private;
     token_amount as u64.private;
 
-// (a + (a + b)) + (a + b) == (3a + 2b)
 closure execute:
     input r0 as field;
     input r1 as field;

@@ -1,7 +1,5 @@
-// The 'call.aleo' program.
 program call.aleo;
 
-// (a + (a + b)) + (a + b) == (3a + 2b)
 closure execute:
     input r0 as field;
     input r1 as field;

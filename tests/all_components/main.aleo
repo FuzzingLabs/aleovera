@@ -1,4 +1,3 @@
-// The 'test.aleo' program.
 program test.aleo;
 
 record token:
@@ -14,7 +13,6 @@ interface array3:
     a0 as u32;
     a1 as u32;
     a2 as u32;
-
 
 closure execute:
     input r0 as field;

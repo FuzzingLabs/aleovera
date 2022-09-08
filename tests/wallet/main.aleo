@@ -1,4 +1,3 @@
-// The 'wallet.aleo' program.
 program wallet.aleo;
 
 function transfer:

@@ -1,4 +1,3 @@
-// The 'compute2.aleo' program.
 program compute2.aleo;
 
 interface message:

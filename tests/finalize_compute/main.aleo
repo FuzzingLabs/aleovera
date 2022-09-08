@@ -1,4 +1,3 @@
-// The 'finalize_compute.aleo' program.
 program finalize_compute.aleo;
 
 mapping account:

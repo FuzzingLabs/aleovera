@@ -1,4 +1,3 @@
-// The 'simple_interface_function.aleo' program.
 program simple_interface_function.aleo;
 
 interface message:

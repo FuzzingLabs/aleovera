@@ -1,4 +1,3 @@
-// The 'record_function_selfcaller.aleo' program.
 program record_function_selfcaller.aleo;
 
 record data:

@@ -121,4 +121,4 @@ class aleodisassembler:
             xadd(f"import {imp.fmt()}")
         self.read_number_components()
         self.read_components()
-        print(utils.aleo_output)
+        print(utils.aleo_output.rstrip())

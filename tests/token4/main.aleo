@@ -1,4 +1,3 @@
-// The 'token4.aleo' program.
 program token4.aleo;
 
 record token:

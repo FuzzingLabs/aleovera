@@ -1,4 +1,3 @@
-// The 'record_function_complex_cast.aleo' program.
 program record_function_complex_cast.aleo;
 
 record record_a:
