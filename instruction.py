@@ -158,7 +158,7 @@ class instruction:
 
             output = ""
             for reg in self.output:
-                output += f"r{reg} "
+                output += f"{reg.fmt()} "
             output = output[:-1]
             
             return f"call {callee} {self.operands.fmt()} into {output};"
@@ -248,8 +248,8 @@ class instruction:
             # Only parsing if it's a base-register
             # register = base-register *( "." identifier )
             # base-register = %"r" numeral
-            variant = bytecodes.read_u8()
-            self.output.append(bytecodes.read_u8())
+            # variant = bytecodes.read_u8()
+            self.output.append(register(bytecodes))
 
     def read_assert_instruction(self, bytecodes):
         """Read assert instruction
