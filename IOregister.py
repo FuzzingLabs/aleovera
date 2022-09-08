@@ -25,7 +25,7 @@ class IOregister:
         if self.attribute_type != valueType.attributeType.record:
             res += f"{self.value}.{valueType.attributeType(self.attribute_type).name}"
         else:
-            res += f"{self.value}"
+            res += f"{self.value}.record"
         res += ";"
         xadd(res)
 
