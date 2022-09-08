@@ -138,10 +138,10 @@ class instruction:
         self.cast = None
 
     def fmt(self):
-        """Get the disassembly of the opcode
+        """Get the disassembly of the instruction
 
         Returns:
-            String: The disassembly of the opcode
+            String: The disassembly of the instruction
         """
         if self.opcode is Opcode.Cast:
             # The output register of the cast is not of a register type
