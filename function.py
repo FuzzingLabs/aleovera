@@ -89,9 +89,10 @@ class function:
         if self.finalizes:
             xadd(f"finalize {self.finalizes[0].operands.fmt()};")
         xadd("")
-        utils.tab -= 1
-        for finalize in self.finalizes:
-            finalize.function.pretty_print()
+        if len(self.finalizes) != 0:
+            utils.tab -= 1
+            for finalize in self.finalizes:
+                finalize.function.pretty_print()
 
         utils.tab -= 1
 
@@ -121,5 +122,4 @@ class function:
             is_finalize = bytecodes.read_u8()
             if is_finalize == 1:
                 self.read_finalize(bytecodes)
-
         self.pretty_print()

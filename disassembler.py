@@ -101,7 +101,7 @@ class aleodisassembler:
                 self.read_function("function")
             else:
                 xadd("type does not exist : ", type)
-            xadd("")
+            # xadd("")
 
     def debug_print(self):
         xprint("version : ", self.version)

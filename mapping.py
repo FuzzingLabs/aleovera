@@ -57,6 +57,7 @@ class mapping:
             f"value {self.value.identifier} as {self.value.value}.{self.value.attribute_type};"
         )
         utils.tab -= 1
+        xadd()
 
     def disassemble_mapping(self, bytecodes):
         """Disassemble the mapping

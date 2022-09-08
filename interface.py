@@ -37,11 +37,12 @@ class interface:
         """
         Pretty print all the content of the interface
         """
-        xadd(f"identifier {self.identifier}")
+        xadd(f"interface {self.identifier}:")
         utils.tab += 1
         for new_entry in self.entries:
-            xadd(f"{new_entry.identifier} as {new_entry.value}")
+            xadd(f"{new_entry.identifier} as {new_entry.value};")
         utils.tab -= 1
+        xadd()
 
     def disassemble_interface(self, bytecodes):
         """Disassemble the interface

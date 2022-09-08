@@ -9,9 +9,11 @@ def build_tests():
     crash = 0
     total = 0
     for folder in subfolders:
+        print("-------------------")
+        print(folder)
         os.chdir(folder)
-        subprocess.run("aleo build", shell=True, check=True)
-        if os.path.isdir("build/"):
+        subprocess.Popen("aleo build", shell=True, stdout=subprocess.DEVNULL)
+        if os.path.isfile("build/main.avm"):
             p = subprocess.Popen(
                 "python3 ../../main.py -f build/main.avm".split(" "),
                 stdout=subprocess.PIPE,
@@ -33,8 +35,8 @@ def build_tests():
             print("NO BUILD DIRECTORY")
         os.chdir(cwd)
     print("-------------------------------------------------")
-    print(f"CRASH TOTAL == {crash}")
-    print(f"RATIO -- {total/len(subfolders)}")
+    print(f"Folder that does not build : {crash}")
+    print(f"RATIO -- {total/(len(subfolders) - crash)}")
 
 
 build_tests()

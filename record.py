@@ -35,6 +35,7 @@ class record:
                 f"{new_entry.identifier} as {new_entry.value}.{new_entry.attribute_type.name};"
             )
         utils.tab -= 1
+        xadd()
 
     def set_record_gates_owner(self, identifier, bytecodes):
         """Create the entry for the gates or the owner based on the identifier
