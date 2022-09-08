@@ -6,8 +6,6 @@ record token:
     gates as u64.private;
     amount as u64.private;
 
-
-
 mapping account:
     key owner as address.public;
     value amount as u64.public;

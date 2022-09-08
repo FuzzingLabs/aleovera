@@ -1,0 +1,10 @@
+{
+    "program": "wallet.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkpAiiiu9EQ3y1gEKUvhjGug7djaMwMPKSFq5k3MzJd7Yes",
+        "address": "aleo1l86zwt04d8vvq65hyfpl5t7zcxc60fq5lacfy6ptw457gl52avqq8jfqmu"
+    },
+    "license": "MIT"
+}

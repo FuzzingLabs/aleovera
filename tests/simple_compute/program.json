@@ -1,0 +1,10 @@
+{
+    "program": "simple_compute.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkpGqiirTnwJvHY9Xf2Y9ihwcamoJ8m2KbcEQ1WnCQEwsEm",
+        "address": "aleo1wpee6xzj9gr6waz3cdn40dddeqx2khmz3rgmav5em0xlc9w85vrs8k88wy"
+    },
+    "license": "MIT"
+}

@@ -1,0 +1,10 @@
+{
+    "program": "credits.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkp9mDhg1aWneokWgXEPzHS44jcmXh4juPRk594CNiHg1RS",
+        "address": "aleo1adpwcv5qnuak7mgrg5z7qefsn2ufpr5ae5grgrflgdgpcs2yvvgqc7umkt"
+    },
+    "license": "MIT"
+}

@@ -1,0 +1,10 @@
+{
+    "program": "multirecord.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkp7DKL6XgvSpAXANHeY2Fw3DQ62c4ntKwESiyVawc9rd9V",
+        "address": "aleo18rjnukrepq9xv6pfty0twvn8x74skmxq5k0ud4kd7e2ccezpty8s7cezql"
+    },
+    "license": "MIT"
+}
