@@ -26,6 +26,7 @@ class IOregister:
             res += f"{self.value}.{valueType.attributeType(self.attribute_type).name}"
         else:
             res += f"{self.value}"
+        res += ";"
         xprint(res)
 
     def disassemble_IOregister(self, bytecodes):

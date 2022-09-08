@@ -107,18 +107,21 @@ class aleodisassembler:
                 xprint("type does not exist : ", type)
             xprint("")
 
+    def debug_print(self):
+        xprint("version : ", self.version)
+        xprint("number of imports : ", self.number_imports)
+        xprint("number of components : ", self.number_components)
+
     def disassemble(self):
         """
         Disassemble the bytecodes
         """
         self.read_version()
-        xprint("version : ", self.version)
         self.read_programID()
-        xprint("program ID : ", self.name + "." + self.network)
+        xprint("program ", self.name + "." + self.network + ";")
         self.read_number_program_imports()
-        xprint("number of imports : ", self.number_imports)
         self.read_imports()
-        xprint("imports : ", self.imports)
+        for imp in self.imports:
+            print(f"import {imp}")
         self.read_number_components()
-        xprint("number of components : ", self.number_components)
         self.read_components()

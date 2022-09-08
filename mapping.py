@@ -51,10 +51,10 @@ class mapping:
         xprint(f"mapping {self.identifier}:")
         utils.tab += 1
         xprint(
-            f"key {self.key.identifier} as {self.key.value}.{self.key.attribute_type}"
+            f"key {self.key.identifier} as {self.key.value}.{self.key.attribute_type};"
         )
         xprint(
-            f"value {self.value.identifier} as {self.value.value}.{self.value.attribute_type}"
+            f"value {self.value.identifier} as {self.value.value}.{self.value.attribute_type};"
         )
         utils.tab -= 1
 

@@ -1,4 +1,3 @@
-
 program finalize.aleo;
 
 record token:
