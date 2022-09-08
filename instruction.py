@@ -233,7 +233,6 @@ class instruction:
             self.cast = valueType.read_plaintext(bytecodes)
 
     def read_call_instruction(self, bytecodes):
-        print(bytecodes.bytecodes)
         variant = bytecodes.read_u8()
         if variant == 1:
             self.callee = utils.read_identifier(bytecodes)
