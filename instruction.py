@@ -66,21 +66,70 @@ class Opcode(Enum):
     Xor = auto()
 
 
-UNARY = [Opcode.Abs, Opcode.AbsWrapped, Opcode.Double, Opcode.Inv, Opcode.Neg, Opcode.Not, Opcode.Square,
-        Opcode.SquareRoot, Opcode.HashBHP256, Opcode.HashBHP512, Opcode.HashBHP768, Opcode.HashBHP1024,
-        Opcode.HashPED64, Opcode.HashPED128, Opcode.HashPSD2, Opcode.HashPSD4, Opcode.HashPSD8]
+UNARY = [
+    Opcode.Abs,
+    Opcode.AbsWrapped,
+    Opcode.Double,
+    Opcode.Inv,
+    Opcode.Neg,
+    Opcode.Not,
+    Opcode.Square,
+    Opcode.SquareRoot,
+    Opcode.HashBHP256,
+    Opcode.HashBHP512,
+    Opcode.HashBHP768,
+    Opcode.HashBHP1024,
+    Opcode.HashPED64,
+    Opcode.HashPED128,
+    Opcode.HashPSD2,
+    Opcode.HashPSD4,
+    Opcode.HashPSD8,
+]
 
-BINARY = [Opcode.Add, Opcode.AddWrapped, Opcode.Sub, Opcode.SubWrapped, Opcode.Mul, Opcode.MulWrapped,
-        Opcode.Div, Opcode.DivWrapped, Opcode.Rem, Opcode.RemWrapped, Opcode.Pow, Opcode.PowWrapped,
-        Opcode.Shl, Opcode.ShlWrapped, Opcode.Shr, Opcode.ShrWrapped, Opcode.And, Opcode.Xor, Opcode.Or, Opcode.Nand,
-        Opcode.Nor, Opcode.GreaterThan, Opcode.GreaterThanOrEqual, Opcode.LessThan, Opcode.LessThanOrEqual,
-        Opcode.IsEq, Opcode.IsNeq, Opcode.CommitBHP256, Opcode.CommitBHP512, Opcode.CommitBHP768,
-        Opcode.CommitBHP1024, Opcode.CommitPED64, Opcode.CommitPED128]
+BINARY = [
+    Opcode.Add,
+    Opcode.AddWrapped,
+    Opcode.Sub,
+    Opcode.SubWrapped,
+    Opcode.Mul,
+    Opcode.MulWrapped,
+    Opcode.Div,
+    Opcode.DivWrapped,
+    Opcode.Rem,
+    Opcode.RemWrapped,
+    Opcode.Pow,
+    Opcode.PowWrapped,
+    Opcode.Shl,
+    Opcode.ShlWrapped,
+    Opcode.Shr,
+    Opcode.ShrWrapped,
+    Opcode.And,
+    Opcode.Xor,
+    Opcode.Or,
+    Opcode.Nand,
+    Opcode.Nor,
+    Opcode.GreaterThan,
+    Opcode.GreaterThanOrEqual,
+    Opcode.LessThan,
+    Opcode.LessThanOrEqual,
+    Opcode.IsEq,
+    Opcode.IsNeq,
+    Opcode.CommitBHP256,
+    Opcode.CommitBHP512,
+    Opcode.CommitBHP768,
+    Opcode.CommitBHP1024,
+    Opcode.CommitPED64,
+    Opcode.CommitPED128,
+]
 
 ASSERT = [Opcode.AssertEq, Opcode.AssertNeq]
 
 
 class instruction:
+    """
+    The instruction class
+    """
+
     def __init__(self) -> None:
         self.bytecodes = None
         self.opcode = None
@@ -88,11 +137,17 @@ class instruction:
         self.output = None
         self.cast = None
 
-
     def fmt(self):
+        """Get the disassembly of the opcode
+
+        Returns:
+            String: The disassembly of the opcode
+        """
         if self.opcode is Opcode.Cast:
             # The output register of the cast is not of a register type
-            return f"Cast {self.operands.fmt()} into r{self.output} as {self.cast}"
+            return (
+                f"Cast {self.operands.fmt()} into r{self.output} as {self.cast}"
+            )
         elif self.opcode is Opcode.Call:
             self.disass = "UNTESTED - UNIMPLEMENTED"
         elif self.opcode is Opcode.Ternary:
@@ -106,7 +161,6 @@ class instruction:
         else:
             self.disass = "UNKNOWN opcode"
 
-        
     def read_identifier(self):
         size_of_string = int.from_bytes(self.bytecodes[:1], "little")
         self.bytecodes = self.bytecodes[1:]
@@ -118,8 +172,9 @@ class instruction:
     Seeems like there's 2 convention for storing strings, so to handle it
     we just give the number needed when its not the first case
     """
-    def read_identifiers(self, number_of_string = 0):
-        if (number_of_string == 0):
+
+    def read_identifiers(self, number_of_string=0):
+        if number_of_string == 0:
             number_of_string = int.from_bytes(self.bytecodes[:2], "little")
             self.bytecodes = self.bytecodes[2:]
         line = []
@@ -140,22 +195,18 @@ impl<N: Network> FromBytes for PlaintextType<N> {
     }
 }
     """
+
     def read_plaintext(self):
-        variant = int.from_bytes(
-            self.bytecodes[:1], "little"
-        )
+        variant = int.from_bytes(self.bytecodes[:1], "little")
         if variant == 0:
             return self.bytecodes[:2].decode("ascii")
         elif variant == 1:
             return self.read_identifier()
         else:
             return f"Failed to deserialize {variant}"
-        
 
     def read_register_type(self):
-        variant = int.from_bytes(
-            self.bytecodes[:1], "little"
-        )
+        variant = int.from_bytes(self.bytecodes[:1], "little")
         self.bytecodes = self.bytecodes[1:]
         if variant == 0:
             self.read_plaintext()
@@ -166,8 +217,8 @@ impl<N: Network> FromBytes for PlaintextType<N> {
         else:
             print("INVALID REGISTER TYPE")
 
-# Decode the value of a variable length integer.
-# https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer
+    # Decode the value of a variable length integer.
+    # https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer
 
     def read_variable_length_integer(self):
         flag = self.bytecodes[0]
@@ -196,30 +247,45 @@ impl<N: Network> FromBytes for PlaintextType<N> {
     #         return self.read_identifiers()
     #     return "Invalid"
 
-
     def read_binary_instruction(self, bytecodes):
+        """Read binary instruction
+
+        Args:
+            bytecodes (bytecodes): The bytecodes object
+        """
         self.operands = Operands(2, bytecodes, True)
         self.output = register(bytecodes)
 
-
     def read_unary_instruction(self, bytecodes):
+        """Read unary instruction
+
+        Args:
+            bytecodes (bytecodes): The bytecodes object
+        """
         self.operands = Operands(1, bytecodes, True)
         self.output = register(bytecodes)
 
     def read_cast_instruction(self, bytecodes):
+        """Read CAST instruction
+
+        Args:
+            bytecodes (bytecodes): The bytecodes object
+
+        Returns:
+            String: Return a string containing an error
+        """
         number_of_operand = bytecodes.read_u8()
-        
+
         if number_of_operand == 0 or number_of_operand > 8:
             print(f"Invalid cast ({number_of_operand} parameters)")
-        
 
         self.operands = Operands(number_of_operand, bytecodes, True)
 
         # Get output register, its formatted like an IO register
         if bytecodes.read_u8() != 0:
             return "Error in cast"
-        
-        self.output = bytecodes.read_u8()    
+
+        self.output = bytecodes.read_u8()
 
         # Get casted type (Should be a single string) but stored weirdly, need to improve
         valtype = bytecodes.peek()
@@ -231,6 +297,11 @@ impl<N: Network> FromBytes for PlaintextType<N> {
             self.cast = valueType.read_plaintext(bytecodes)
 
     def disassemble_instruction(self, bytecodes):
+        """Disassemble the instruction
+
+        Args:
+            bytecodes (bytecodes): The bytecodes object
+        """
         index = bytecodes.read_u16()
         self.opcode = Opcode(index)
         # Need to make lists of function using the same pattern as xor (input1, input2, output) to dont decompile wrongly
@@ -248,4 +319,3 @@ impl<N: Network> FromBytes for PlaintextType<N> {
             self.read_binary_instruction(bytecodes)
         else:
             self.disass = "UNKNOWN opcode"
-        
