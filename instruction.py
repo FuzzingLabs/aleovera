@@ -92,7 +92,7 @@ class instruction:
     def fmt(self):
         if self.opcode is Opcode.Cast:
             # The output register of the cast is not of a register type
-            return f"Cast{self.operands.fmt()} into r{self.output} as {self.cast}"
+            return f"Cast {self.operands.fmt()} into r{self.output} as {self.cast}"
         elif self.opcode is Opcode.Call:
             self.disass = "UNTESTED - UNIMPLEMENTED"
         elif self.opcode is Opcode.Ternary:
@@ -213,7 +213,7 @@ impl<N: Network> FromBytes for PlaintextType<N> {
             print(f"Invalid cast ({number_of_operand} parameters)")
         
 
-        self.operands = Operands(number_of_operand, bytecodes, True).fmt()
+        self.operands = Operands(number_of_operand, bytecodes, True)
 
         # Get output register, its formatted like an IO register
         if bytecodes.read_u8() != 0:
