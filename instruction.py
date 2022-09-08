@@ -136,6 +136,7 @@ class instruction:
         self.output = None
         self.cast = None
         self.callee = None
+        self.variant = None
 
     def fmt(self):
         """Get the disassembly of the instruction
@@ -151,9 +152,11 @@ class instruction:
             )
 
         elif self.opcode is Opcode.Call:
-            callee = self.callee[0]
-            for resource in self.callee[1:]:
-                callee += f".{resource}"
+            callee = ""
+            if self.variant == 1:
+                callee = self.callee
+            else:
+                callee = f"{self.callee[0].fmt()}/{self.callee[1]}"
 
             output = ""
             for reg in self.output:
@@ -230,11 +233,14 @@ class instruction:
             self.cast = valueType.read_plaintext(bytecodes)
 
     def read_call_instruction(self, bytecodes):
+        print(bytecodes.bytecodes)
         variant = bytecodes.read_u8()
         if variant == 1:
-            self.callee = [utils.read_identifier(bytecodes)]
+            self.callee = utils.read_identifier(bytecodes)
         else:
-            self.callee = utils.read_locator(bytecodes)
+            self.callee = utils.read_external(bytecodes)
+
+        self.variant = variant
         
         number_of_operand = bytecodes.read_u8()
         self.operands = Operands(number_of_operand, bytecodes, True)

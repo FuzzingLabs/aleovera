@@ -96,3 +96,6 @@ def read_locator(bytecodes):
     id = read_identifier(bytecodes)
     resource = read_identifier(bytecodes)
     return [id, resource]
+
+def read_external(bytecodes):
+    return [ProgramId(bytecodes), read_identifier(bytecodes)]
