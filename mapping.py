@@ -4,6 +4,10 @@ import utils
 
 
 class key_value:
+    """
+    Key_value class can contains the key or the value of the mapping.
+    """
+
     def __init__(self, bytecodes) -> None:
         self.identifier = None
         self.attribute_type = None
@@ -11,6 +15,11 @@ class key_value:
         self.read_key_value(bytecodes)
 
     def read_key_value(self, bytecodes):
+        """Read the key or the value contents
+
+        Args:
+            bytecodes (bytecodes): The bytecodes object
+        """
         self.identifier = utils.read_identifier(bytecodes)
         variant = bytecodes.read_u8()
         if variant == 0:
@@ -25,6 +34,10 @@ class key_value:
 
 
 class mapping:
+    """
+    The mapping class contains the key and the value mapped
+    """
+
     def __init__(self, bytecodes) -> None:
         self.identifier = None
         self.key = None
@@ -32,6 +45,9 @@ class mapping:
         self.disassemble_mapping(bytecodes)
 
     def pretty_print(self):
+        """
+        Pretty print all the content of the mapping
+        """
         xprint(f"mapping {self.identifier}:")
         utils.tab += 1
         xprint(
@@ -43,6 +59,11 @@ class mapping:
         utils.tab -= 1
 
     def disassemble_mapping(self, bytecodes):
+        """Disassemble the mapping
+
+        Args:
+            bytecodes (bytecodes): The bytecodes object
+        """
         self.identifier = utils.read_identifier(bytecodes)
         # Get key and value
         self.key = key_value(bytecodes)
