@@ -80,13 +80,9 @@ class Operand:
 
         elif op_type == OperandType.Register:
             self.value = register(bytecodes)
-            # operands.append(reg.fmt())
             
         elif op_type == OperandType.ProgramID:
-            name = utils.read_identifier(bytecodes)
-            network = utils.read_identifier(bytecodes)
-            self.value = [name, network]
-            # operands.append(f'{name}.{network}')
+            self.value = utils.read_locator()
 
         elif op_type == OperandType.Caller:
             pass

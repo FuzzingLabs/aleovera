@@ -63,3 +63,8 @@ def read_identifier(bytecodes):
     len_identifier = bytecodes.read_u8()
     identifier = bytecodes.read_n(len_identifier).decode("utf-8")
     return identifier
+
+def read_locator(bytecodes):
+    id = read_identifier(bytecodes)
+    resource =read_identifier(bytecodes)
+    return [id, resource]

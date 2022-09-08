@@ -136,6 +136,7 @@ class instruction:
         self.operands = None
         self.output = None
         self.cast = None
+        self.callee = None
 
     def fmt(self):
         """Get the disassembly of the instruction
@@ -143,19 +144,31 @@ class instruction:
         Returns:
             String: The disassembly of the instruction
         """
-
         # If is sorted by from smallest array to the biggest
         if self.opcode is Opcode.Cast:
             # The output register of the cast is not of a register type
             return (
-                f"Cast {self.operands.fmt()} into r{self.output} as {self.cast};"
+                f"cast {self.operands.fmt()} into r{self.output} as {self.cast}.record;"
             )
+
         elif self.opcode is Opcode.Call:
-            self.disass = "UNTESTED - UNIMPLEMENTED"
+            callee = self.callee[0]
+            for resource in self.callee[1:]:
+                callee += f".{resource}"
+
+            output = ""
+            for reg in self.output:
+                output += f"r{reg} "
+            output = output[:-1]
+            
+            return f"call {callee} {self.operands.fmt()} into {output};"
+            
         elif self.opcode in ASSERT:
             return f"{self.opcode.name} {self.operands.fmt()};"
+
         elif self.opcode is Opcode.Ternary or self.opcode in UNARY or self.opcode in BINARY:
             return f"{self.opcode.name} {self.operands.fmt()} into {self.output.fmt()};"
+
         else:
             self.disass = "UNKNOWN opcode"
 
@@ -217,7 +230,28 @@ class instruction:
         elif valtype == 1:
             self.cast = valueType.read_plaintext(bytecodes)
 
-    def read_assert(self, bytecodes):
+    def read_call_instruction(self, bytecodes):
+        variant = bytecodes.read_u8()
+        if variant == 1:
+            self.callee = [utils.read_identifier(bytecodes)]
+        else:
+            self.callee = utils.read_locator()
+        
+        number_of_operand = bytecodes.read_u8()
+        self.operands = Operands(number_of_operand, bytecodes, True)
+
+        # Call can have multiple output
+        number_of_output = bytecodes.read_u8()
+
+        self.output = []
+        for _ in range(number_of_output):
+            # Only parsing if it's a base-register
+            # register = base-register *( "." identifier )
+            # base-register = %"r" numeral
+            variant = bytecodes.read_u8()
+            self.output.append(bytecodes.read_u8())
+
+    def read_assert_instruction(self, bytecodes):
         """Read assert instruction
 
         Args:
@@ -238,11 +272,11 @@ class instruction:
         if self.opcode is Opcode.Cast:
             self.read_cast_instruction(bytecodes)
         elif self.opcode is Opcode.Call:
-            self.disass = "UNTESTED - UNIMPLEMENTED"
+            self.read_call_instruction(bytecodes)
         elif self.opcode is Opcode.Ternary:
-            self.disass = "UNTESTED - UNIMPLEMENTED"
+            self.read_ternary_instruction(bytecodes)
         elif self.opcode in ASSERT:
-            self.disass = "UNTESTED - UNIMPLEMENTED"
+            self.read_assert_instruction(bytecodes)
         elif self.opcode in UNARY:
             self.read_unary_instruction(bytecodes)
         elif self.opcode in BINARY:
