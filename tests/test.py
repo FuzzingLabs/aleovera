@@ -1,7 +1,10 @@
+#!/usr/bin/env python3
+
 import os
 import sys
 import subprocess
 from difflib import SequenceMatcher
+from aleovera.disassembler import aleodisassembler
 
 
 def build_tests():
@@ -13,15 +16,20 @@ def build_tests():
         print("-------------------", file=sys.stderr)
         print(folder, file=sys.stderr)
         os.chdir(folder)
-        subprocess.check_call(
-            "aleo build", shell=True, stdout=subprocess.DEVNULL
-        )
+        # subprocess.check_call(
+        #    "aleo build", shell=True, stdout=subprocess.DEVNULL
+        # )
 
         if os.path.isfile("build/main.avm"):
-            p = subprocess.Popen(
-                "python3 ../../main.py -f build/main.avm".split(" "),
-                stdout=subprocess.PIPE,
-            )
+            content = ""
+            with open("build/main.avm", "rb") as file:
+                content = file.read()
+            if content == "":
+                pass
+            aleo = aleodisassembler(content)
+            aleo.disassemble()
+            output = aleo.fmt()
+            # print(output)
             f = open("main.aleo")
             unparsed_lines = f.readlines()
             file_lines = []
@@ -29,31 +37,26 @@ def build_tests():
                 if line[:2] == "//":
                     continue
                 file_lines.append(line.rstrip() + "\n")
-                
+
             content_file = "".join(file_lines)
             f.close()
-            output, _ = p.communicate()
-            output = output.decode("utf-8")
-            # print(output)
-            # print("----")
-            # print(content_file)
             ratio = SequenceMatcher(None, output, content_file).ratio()
             if ratio != 1 and len(sys.argv) == 2 and sys.argv[1] == "-d":
                 output_lines = output.split("\n")
                 outlen = len(output_lines)
                 fillen = len(file_lines)
                 i = 0
-                while (i < outlen and i < fillen):
+                while i < outlen and i < fillen:
                     if file_lines[i] != output_lines[i]:
                         print(f">>> {file_lines[i]}")
                         print(f"<<< {output_lines[i]}")
                     i += 1
-                while (i < outlen):
+                while i < outlen:
                     print(f"<<< {output_lines[i]}")
                     i += 1
-                while (i < fillen):
+                while i < fillen:
                     print(f">>> {file_lines[i]}")
-                    i+= 1
+                    i += 1
 
             print(ratio, file=sys.stderr)
             total += ratio
