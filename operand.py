@@ -37,19 +37,40 @@ class Literal:
     def read_literal_value(self, bytecodes):
         res = "UNHANDLED LITERAL TYPE"
         if self.type == LiteralType.i128 or self.type == LiteralType.u128:
-            res = bytecodes.read_u128()
+            if (self.type == LiteralType.i128):
+                res = bytecodes.read_i128()
+            else:
+                res = bytecodes.read_u128()
 
         elif self.type == LiteralType.i64 or self.type == LiteralType.u64:
-            res = bytecodes.read_u64()
+            if (self.type == LiteralType.i64):
+                res = bytecodes.read_i64()
+            else:
+                res = bytecodes.read_u64()
 
         elif self.type == LiteralType.i32 or self.type == LiteralType.u32:
-            res = bytecodes.read_u32()
+            if (self.type == LiteralType.i32):
+                res = bytecodes.read_i32()
+            else:
+                res = bytecodes.read_u32()
 
         elif self.type == LiteralType.i16 or self.type == LiteralType.u16:
-            res = bytecodes.read_u16()
+            if (self.type == LiteralType.i16):
+                res = bytecodes.read_i16()
+            else:
+                res = bytecodes.read_u16()
 
         elif self.type == LiteralType.i8 or self.type == LiteralType.u8:
+            if (self.type == LiteralType.i8):
+                res = bytecodes.read_i8()
+            else:
+                res = bytecodes.read_u8()
+        elif self.type == LiteralType.boolean:
             res = bytecodes.read_u8()
+            if (res == 0):
+                res = "false"
+            else:
+                res = "true"
 
         return res
 
@@ -57,7 +78,8 @@ class Literal:
         res = ""
         if (self.value):
             res = f"{self.value}"
-        res += self.type.name
+        if (self.type != LiteralType.boolean):
+            res += self.type.name
         return res
 
 class Operand:

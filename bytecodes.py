@@ -15,7 +15,7 @@ class bytecodes:
         Returns:
             Int: the int format of the byte
         """
-        return int.from_bytes(self.read_n(1), "little")
+        return int.from_bytes(self.read_n(1), "little", signed=False)
 
     def read_u16(self):
         """read 2 bytes
@@ -23,7 +23,7 @@ class bytecodes:
         Returns:
             Int: the int format of the bytes
         """
-        return int.from_bytes(self.read_n(2), "little")
+        return int.from_bytes(self.read_n(2), "little", signed=False)
 
     def read_u32(self):
         """read 4 bytes
@@ -31,7 +31,7 @@ class bytecodes:
         Returns:
             Int: the int format of the bytes
         """
-        return int.from_bytes(self.read_n(4), "little")
+        return int.from_bytes(self.read_n(4), "little", signed=False)
 
     def read_u64(self):
         """read 8 bytes
@@ -39,7 +39,55 @@ class bytecodes:
         Returns:
             Int: the int format of the bytes
         """
-        return int.from_bytes(self.read_n(8), "little")
+        return int.from_bytes(self.read_n(8), "little", signed=False)
+
+    def read_u128(self):
+        """read 8 bytes
+
+        Returns:
+            Int: the int format of the bytes
+        """
+        return int.from_bytes(self.read_n(8), "little", signed=False)
+
+    def read_i8(self):
+        """Read one byte
+
+        Returns:
+            Int: the int format of the byte
+        """
+        return int.from_bytes(self.read_n(1), "little", signed=True)
+
+    def read_i16(self):
+        """read 2 bytes
+
+        Returns:
+            Int: the int format of the bytes
+        """
+        return int.from_bytes(self.read_n(2), "little", signed=True)
+
+    def read_i32(self):
+        """read 4 bytes
+
+        Returns:
+            Int: the int format of the bytes
+        """
+        return int.from_bytes(self.read_n(4), "little", signed=True)
+
+    def read_i64(self):
+        """read 8 bytes
+
+        Returns:
+            Int: the int format of the bytes
+        """
+        return int.from_bytes(self.read_n(8), "little", signed=True)
+
+    def read_i128(self):
+        """read 16 bytes
+
+        Returns:
+            Int: the int format of the bytes
+        """
+        return int.from_bytes(self.read_n(16), "little", signed=True)
 
     def read_n(self, n):
         """Read n bytes
