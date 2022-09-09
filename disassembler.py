@@ -123,6 +123,10 @@ class aleodisassembler:
         xadd(f"program {self.program_id.fmt()};")
         self.read_number_components()
         self.read_components()
-        callgraph = CallFlowGraph(self.functions, "pdf", "test")
-        callgraph.print()
+
+    def print_disassembly(self):
         print(utils.aleo_output.rstrip())
+
+    def print_call_flow_graph(self, filename, format):
+        callgraph = CallFlowGraph(self.functions, format, filename)
+        callgraph.print()
