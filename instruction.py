@@ -166,7 +166,10 @@ class instruction:
             return f"call {callee} {self.operands.fmt()} into {output};"
             
         elif self.opcode in ASSERT:
-            return f"{self.opcode.name} {self.operands.fmt()};"
+            if (self.opcode is Opcode.AssertEq):
+                return f"assert.eq {self.operands.fmt()};"
+            else:
+                return f"assert.neq {self.operands.fmt()};"
 
         elif self.opcode is Opcode.Ternary or self.opcode in UNARY or self.opcode in BINARY:
             return f"{self.opcode.name} {self.operands.fmt()} into {self.output.fmt()};"
