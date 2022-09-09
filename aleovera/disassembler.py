@@ -123,6 +123,9 @@ class aleodisassembler:
         self.read_number_components()
         self.read_components()
 
+    def fmt(self):
+        return utils.aleo_output.rstrip()
+
     def print_disassembly(self):
         print(utils.aleo_output.rstrip())
 
