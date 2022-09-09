@@ -172,7 +172,31 @@ class instruction:
                 return f"assert.neq {self.operands.fmt()};"
 
         elif self.opcode is Opcode.Ternary or self.opcode in UNARY or self.opcode in BINARY:
-            return f"{self.opcode.name} {self.operands.fmt()} into {self.output.fmt()};"
+            op = self.opcode.name
+
+            if self.opcode.name[-7:] == "Wrapped":
+                op = f"{self.opcode.name[:-7]}.w"
+
+            elif self.opcode in [Opcode.GreaterThan, Opcode.GreaterThanOrEqual]:
+                op = "gt"
+                if self.opcode == Opcode.GreaterThanOrEqual:
+                    op += 'e'
+
+            elif self.opcode in [Opcode.LessThan, Opcode.LessThanOrEqual]:
+                op = "lt"
+                if self.opcode == Opcode.LessThanOrEqual:
+                    op += 'e'
+
+            elif self.opcode.name[:4] == "Hash":
+                op = f"{self.opcode.name[:4]}.{self.opcode.name[4:]}"
+
+            elif self.opcode.name[:6] == "Commit":
+                op = f"{self.opcode.name[:6]}.{self.opcode.name[6:]}"
+            
+            elif self.opcode == Opcode.SquareRoot:
+                op = "sqrt"
+
+            return f"{op} {self.operands.fmt()} into {self.output.fmt()};"
 
         else:
             self.disass = "UNKNOWN opcode"
