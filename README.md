@@ -24,6 +24,14 @@ aleo build
 aleovera -f ./build/main.avm
 ```
 
+## Print the contract's call graph 
+The call flow graph represents calling relationships between functions, imported functions and closures of the contract.
+
+```sh
+ python3 main.py -f tests/multiple_calls/build/main.avm -c
+ ```
+<img src="/images/call_flow_graph.png"/></br>
+
 # F.A.Q
 ## How to run the tests?
 
