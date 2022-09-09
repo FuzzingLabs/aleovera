@@ -1,4 +1,4 @@
-# credits.aleo
+# credits2.aleo
 
 ## Build Guide
 

@@ -114,11 +114,11 @@ class aleodisassembler:
         """
         self.read_version()
         self.read_programID()
-        xadd(f"program {self.program_id.fmt()};")
         self.read_number_program_imports()
         self.read_imports()
         for imp in self.imports:
             xadd(f"import {imp.fmt()}")
+        xadd(f"program {self.program_id.fmt()};")
         self.read_number_components()
         self.read_components()
         print(utils.aleo_output.rstrip())

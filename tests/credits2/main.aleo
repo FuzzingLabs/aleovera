@@ -1,4 +1,5 @@
-program credits.aleo;
+// The 'credits2.aleo' program.
+program credits2.aleo;
 
 record credits:
     owner as address.private;

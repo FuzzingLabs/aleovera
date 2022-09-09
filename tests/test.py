@@ -12,7 +12,10 @@ def build_tests():
         print("-------------------")
         print(folder)
         os.chdir(folder)
-        subprocess.Popen("aleo build", shell=True, stdout=subprocess.DEVNULL)
+        subprocess.check_call(
+            "aleo build", shell=True, stdout=subprocess.DEVNULL
+        )
+
         if os.path.isfile("build/main.avm"):
             p = subprocess.Popen(
                 "python3 ../../main.py -f build/main.avm".split(" "),

@@ -1,3 +1,4 @@
+import token.aleo;
 program wallet.aleo;
 
 function transfer:
