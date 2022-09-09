@@ -22,7 +22,10 @@ class IOregister:
         Pretty print all the content of the IOregister
         """
         res = f"{self.IO_type} r{self.register.locator} as "
-        if self.attribute_type != valueType.attributeType.record:
+        if (
+            self.attribute_type != valueType.attributeType.record
+            and self.attribute_type != valueType.attributeType.externalrecord
+        ):
             res += f"{self.value}.{valueType.attributeType(self.attribute_type).name}"
         else:
             res += f"{self.value}.record"
@@ -50,8 +53,7 @@ class IOregister:
         elif self.attribute_type == valueType.attributeType.record:
             self.value = utils.read_identifier(bytecodes)
         elif self.attribute_type == valueType.attributeType.externalrecord:
-            print(
-                "external record value type todo : /home/nabih/snarkVM-fuzzinglabs/console/program/src/data_types/value_type/bytes.rs"
-            )
+            read_external = utils.read_external(bytecodes)
+            self.value = read_external[0].fmt() + "/" + read_external[1]
         else:
             print("fail")
