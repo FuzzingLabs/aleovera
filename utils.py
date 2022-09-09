@@ -54,7 +54,7 @@ def read_variable_length_integer(bytecodes):
     elif flag == 0xFD:
         bytecodes = bytecodes[2:]
         return 16
-    elif flag == 0xFD:
+    elif flag == 0xFE:
         bytecodes = bytecodes[4:]
         return 32
     else:
