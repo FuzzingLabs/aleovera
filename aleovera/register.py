@@ -1,5 +1,4 @@
-import utils
-import bytecodes
+from . import utils
 
 
 class register:

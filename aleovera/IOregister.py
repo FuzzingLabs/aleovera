@@ -1,7 +1,7 @@
-from utils import xadd
-from register import register
-import utils
-import valueType
+from .utils import xadd
+from .register import register
+from . import utils
+from . import valueType
 
 
 class IOregister:

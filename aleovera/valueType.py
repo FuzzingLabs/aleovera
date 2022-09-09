@@ -1,5 +1,5 @@
 from enum import Enum, auto
-import utils
+from . import utils
 
 
 class LiteralType(Enum):

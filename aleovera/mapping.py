@@ -1,6 +1,6 @@
-from utils import xadd
-import valueType
-import utils
+from .utils import xadd
+from . import valueType
+from . import utils
 
 
 class key_value:

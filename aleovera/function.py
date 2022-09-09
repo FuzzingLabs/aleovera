@@ -1,8 +1,8 @@
-from IOregister import IOregister
-from instruction import instruction
-from finalize import finalize
-from utils import xadd
-import utils
+from .IOregister import IOregister
+from .instruction import instruction
+from .finalize import finalize
+from .utils import xadd
+from . import utils
 
 
 class function:

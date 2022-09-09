@@ -1,4 +1,4 @@
-from disassembler import aleodisassembler
+from .disassembler import aleodisassembler
 import argparse
 import os
 
@@ -45,7 +45,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def aleovera():
+def main():
     args = parse_args()
     with args.file[0] as f:
         aleo = aleodisassembler(f.read())
@@ -58,4 +58,4 @@ def aleovera():
 
 
 if __name__ == "__main__":
-    aleovera()
+    main()

@@ -1,10 +1,8 @@
 from enum import Enum, auto
-import bytecodes
-from register import register
-from IOregister import IOregister
-import valueType
-import utils
-from operand import Operands, Operand, OperandType
+from .register import register
+from . import valueType
+from . import utils
+from .operand import Operands
 
 
 class Opcode(Enum):
@@ -147,9 +145,7 @@ class instruction:
         # If is sorted by from smallest array to the biggest
         if self.opcode is Opcode.Cast:
             # The output register of the cast is not of a register type
-            return (
-                f"cast {self.operands.fmt()} into r{self.output} as {self.cast}.record;"
-            )
+            return f"cast {self.operands.fmt()} into r{self.output} as {self.cast}.record;"
 
         elif self.opcode is Opcode.Call:
             callee = ""
@@ -162,16 +158,20 @@ class instruction:
             for reg in self.output:
                 output += f"{reg.fmt()} "
             output = output[:-1]
-            
+
             return f"call {callee} {self.operands.fmt()} into {output};"
-            
+
         elif self.opcode in ASSERT:
-            if (self.opcode is Opcode.AssertEq):
+            if self.opcode is Opcode.AssertEq:
                 return f"assert.eq {self.operands.fmt()};"
             else:
                 return f"assert.neq {self.operands.fmt()};"
 
-        elif self.opcode is Opcode.Ternary or self.opcode in UNARY or self.opcode in BINARY:
+        elif (
+            self.opcode is Opcode.Ternary
+            or self.opcode in UNARY
+            or self.opcode in BINARY
+        ):
             op = self.opcode.name
 
             if self.opcode.name[-7:] == "Wrapped":
@@ -180,19 +180,19 @@ class instruction:
             elif self.opcode in [Opcode.GreaterThan, Opcode.GreaterThanOrEqual]:
                 op = "gt"
                 if self.opcode == Opcode.GreaterThanOrEqual:
-                    op += 'e'
+                    op += "e"
 
             elif self.opcode in [Opcode.LessThan, Opcode.LessThanOrEqual]:
                 op = "lt"
                 if self.opcode == Opcode.LessThanOrEqual:
-                    op += 'e'
+                    op += "e"
 
             elif self.opcode.name[:4] == "Hash":
                 op = f"{self.opcode.name[:4]}.{self.opcode.name[4:]}"
 
             elif self.opcode.name[:6] == "Commit":
                 op = f"{self.opcode.name[:6]}.{self.opcode.name[6:]}"
-            
+
             elif self.opcode == Opcode.SquareRoot:
                 op = "sqrt"
 
@@ -267,7 +267,7 @@ class instruction:
             self.callee = utils.read_external(bytecodes)
 
         self.variant = variant
-        
+
         number_of_operand = bytecodes.read_u8()
         self.operands = Operands(number_of_operand, bytecodes, True)
 
@@ -289,7 +289,6 @@ class instruction:
             bytecodes (bytecodes): The bytecodes object
         """
         self.operands = Operands(2, bytecodes, True)
-
 
     def disassemble_instruction(self, bytecodes):
         """Disassemble the instruction

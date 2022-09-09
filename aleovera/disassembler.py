@@ -1,12 +1,11 @@
-from function import function
-from record import record
-from interface import interface
-from mapping import mapping
-from utils import xprint, xadd, ProgramId
-from bytecodes import bytecodes
-from callflowgraph import CallFlowGraph
-
-import utils
+from .function import function
+from .record import record
+from .interface import interface
+from .mapping import mapping
+from .utils import xprint, xadd, ProgramId
+from .bytecodes import bytecodes
+from .callflowgraph import CallFlowGraph
+from . import utils
 
 
 class aleodisassembler:

@@ -1,11 +1,11 @@
 from graphviz import Digraph
-from utils import (
+from .utils import (
     CALLGRAPH_CONFIG,
     CALLGRAPH_NODE_ATTR,
     CALLGRAPH_GRAPH_ATTR,
     CALLGRAPH_EDGE_ATTR,
 )
-from instruction import Opcode
+from .instruction import Opcode
 
 
 class CallFlowGraph:

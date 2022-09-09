@@ -1,7 +1,6 @@
 from enum import Enum, auto
-import utils
-from operand import Operands
-from utils import xadd
+from . import utils
+from .operand import Operands
 
 
 class Opcode(Enum):

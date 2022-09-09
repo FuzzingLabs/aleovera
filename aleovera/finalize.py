@@ -1,9 +1,9 @@
-from utils import xadd
-from IOregister import IOregister
-from instruction import instruction
-from finalize_instruction import finalize_instruction
-from operand import Operands
-import utils
+from .utils import xadd
+from .IOregister import IOregister
+from .instruction import instruction
+from .finalize_instruction import finalize_instruction
+from .operand import Operands
+from . import utils
 import sys
 
 
