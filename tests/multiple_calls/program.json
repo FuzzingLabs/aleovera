@@ -1,0 +1,10 @@
+{
+    "program": "multiple_calls.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkpDchPja6gci1e3SuDEmaFvwxKRNEPcPSZDq3KCvFwLVQG",
+        "address": "aleo162umxln94ede80qxxuhrs0lmgjyg0xdk4jkpc4jqa0dfycxa5cysr4q8ch"
+    },
+    "license": "MIT"
+}

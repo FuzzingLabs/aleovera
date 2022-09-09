@@ -4,6 +4,8 @@ from interface import interface
 from mapping import mapping
 from utils import xprint, xadd, ProgramId
 from bytecodes import bytecodes
+from callflowgraph import CallFlowGraph
+
 import utils
 
 
@@ -121,4 +123,6 @@ class aleodisassembler:
         xadd(f"program {self.program_id.fmt()};")
         self.read_number_components()
         self.read_components()
+        callgraph = CallFlowGraph(self.functions, "pdf", "test")
+        callgraph.print()
         print(utils.aleo_output.rstrip())

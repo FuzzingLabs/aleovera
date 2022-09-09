@@ -1,3 +1,43 @@
+# Graphical stuff for the CallFlowGraph's dot
+CALLGRAPH_CONFIG = {
+    "default": {
+        "shape": "oval",
+        "color": "",
+        "style": "solid",
+        "fillcolor": "white",
+    },
+    "entrypoint": {"shape": "doubleoctagon", "style": "filled"},
+    "import": {"style": "filled", "fillcolor": "lightcoral"},
+    "constructor": {"style": "filled", "fillcolor": "violet"},
+    "l1_handler": {"style": "filled", "fillcolor": "lightskyblue"},
+    "external": {"style": "filled", "fillcolor": "lightgreen"},
+    "view": {"style": "filled", "fillcolor": "orange"},
+    "raw_input": {"style": "filled", "fillcolor": "salmon"},
+    "raw_output": {"style": "filled", "fillcolor": "tomato"},
+    "known_ap_change": {"style": "filled", "fillcolor": "yellow"},
+}
+CALLGRAPH_NODE_ATTR = {
+    "style": "filled",
+    "shape": "rect, plaintext",
+    "pencolor": "#00000044",
+    "fontname": "Helvetica,Arial,sans-serif",
+}
+CALLGRAPH_GRAPH_ATTR = {
+    "fontname": "Helvetica,Arial,sans-serif",
+    "fontsize": "20",
+    "layout": "dot",
+    "rankdir": "LR",
+    "newrank": "true",
+}
+CALLGRAPH_EDGE_ATTR = {
+    "arrowsize": "0.5",
+    "fontname": "Helvetica,Arial,sans-serif",
+    "labeldistance": "3",
+    "labelfontcolor": "#00000080",
+    "penwidth": "2",
+}
+
+
 def tab_init():
     global tab
     tab = 0
@@ -23,12 +63,13 @@ def xprint(*args, end="\n"):
     tab_str = "    " * tab
     print(tab_str + "".join(map(str, args)).lower(), end=end)
 
-class ProgramId():
+
+class ProgramId:
     def __init__(self, bytecodes) -> None:
         self.name = None
         self.network = None
         self.parse_program_id(bytecodes)
-    
+
     def parse_program_id(self, bytecodes):
         len_name = bytecodes.read_u8()
         self.name = bytecodes.read_n(len_name).decode("utf-8")
@@ -96,6 +137,7 @@ def read_locator(bytecodes):
     id = read_identifier(bytecodes)
     resource = read_identifier(bytecodes)
     return [id, resource]
+
 
 def read_external(bytecodes):
     return [ProgramId(bytecodes), read_identifier(bytecodes)]
