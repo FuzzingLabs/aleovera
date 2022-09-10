@@ -8,6 +8,23 @@ from difflib import SequenceMatcher
 from aleovera.disassembler import aleodisassembler
 
 
+class bcolors:
+    def __init__(self, color=False):
+        self.HEADER = "\033[95m" if color else ""
+        self.BLUE = "\033[94m" if color else ""
+        self.CYAN = "\033[96m" if color else ""
+        self.GREEN = "\033[92m" if color else ""
+        self.YELLOW = "\033[93m" if color else ""
+        self.RED = "\033[91m" if color else ""
+        self.ENDC = "\033[0m" if color else ""
+        self.BOLD = "\033[1m" if color else ""
+        self.BEIGE = "\033[36m" if color else ""
+        self.UNDERLINE = "\033[4m" if color else ""
+
+
+color = bcolors(True)
+
+
 def print_diff(ref, out):
     out = out.split("\n")
     outlen = len(out)
@@ -15,14 +32,14 @@ def print_diff(ref, out):
     i = 0
     while i < outlen and i < fillen:
         if ref[i] != out[i]:
-            print(f">>> {ref[i]}")
-            print(f"<<< {out[i]}")
+            print(color.GREEN + f">>> {ref[i]}" + color.ENDC)
+            print(color.RED + f"<<< {out[i]}" + color.ENDC)
         i += 1
     while i < outlen:
-        print(f"<<< {out[i]}")
+        print(color.RED + f"<<< {out[i]}" + color.ENDC)
         i += 1
     while i < fillen:
-        print(f">>> {ref[i]}")
+        print(color.GREEN + f">>> {ref[i]}" + color.ENDC)
         i += 1
 
 
