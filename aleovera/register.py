@@ -34,4 +34,4 @@ class register:
         if self.identifiers != None:
             for identifier in self.identifiers:
                 res += f".{identifier}"
-        return res
+        return utils.color.GREEN + res + utils.color.ENDC

@@ -21,7 +21,15 @@ class IOregister:
         """
         Pretty print all the content of the IOregister
         """
-        res = f"{self.IO_type} r{self.register.locator} as "
+        res = (
+            utils.color.CYAN
+            + f"{self.IO_type}"
+            + utils.color.ENDC
+            + utils.color.YELLOW
+            + f" r{self.register.locator}"
+            + utils.color.ENDC
+            + " as "
+        )
         if (
             self.attribute_type != valueType.attributeType.record
             and self.attribute_type != valueType.attributeType.externalrecord
@@ -30,11 +38,15 @@ class IOregister:
                 self.value == "Field"
                 and self.attribute_type == valueType.attributeType.constant
             ):
-                res += f"{self.value}"
+                res += utils.color.GREEN + f"{self.value}" + utils.color.ENDC
             else:
-                res += f"{self.value}.{valueType.attributeType(self.attribute_type).name}"
+                res += (
+                    utils.color.GREEN
+                    + f"{self.value}.{valueType.attributeType(self.attribute_type).name}"
+                    + utils.color.ENDC
+                )
         else:
-            res += f"{self.value}.record"
+            res += utils.color.GREEN + f"{self.value}.record" + utils.color.ENDC
         res += ";"
         xadd(res)
 

@@ -38,6 +38,25 @@ CALLGRAPH_EDGE_ATTR = {
 }
 
 
+class bcolors:
+    def __init__(self, color=False):
+        self.HEADER = "\033[95m" if color else ""
+        self.BLUE = "\033[94m" if color else ""
+        self.CYAN = "\033[96m" if color else ""
+        self.GREEN = "\033[92m" if color else ""
+        self.YELLOW = "\033[93m" if color else ""
+        self.RED = "\033[91m" if color else ""
+        self.ENDC = "\033[0m" if color else ""
+        self.BOLD = "\033[1m" if color else ""
+        self.BEIGE = "\033[36m" if color else ""
+        self.UNDERLINE = "\033[4m" if color else ""
+
+
+def color_init(activate):
+    global color
+    color = bcolors(color=activate)
+
+
 def tab_init():
     global tab
     tab = 0
@@ -78,7 +97,7 @@ class ProgramId:
         self.network = bytecodes.read_n(len_network).decode("utf-8")
 
     def fmt(self):
-        return f"{self.name}.{self.network}"
+        return color.HEADER + f"{self.name}.{self.network}" + color.ENDC
 
 
 def read_variable_length_integer(bytecodes):

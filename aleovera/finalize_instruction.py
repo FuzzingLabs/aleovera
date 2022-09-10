@@ -26,7 +26,12 @@ class finalize_instruction:
         Returns:
             String: The disassembly of the instruction
         """
-        return f"{Opcode(self.opcode).name} {self.mapping}[{self.first.fmt()}] by {self.second.fmt()};"
+        return (
+            utils.color.RED
+            + f"{Opcode(self.opcode).name}"
+            + utils.color.ENDC
+            + f" {self.mapping}[{self.first.fmt()}] by {self.second.fmt()};"
+        )
 
     def disassemble_finalize_instruction(self, bytecodes):
         """Disassemble the instruction

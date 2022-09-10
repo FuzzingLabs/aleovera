@@ -37,10 +37,22 @@ class interface:
         """
         Pretty print all the content of the interface
         """
-        xadd(f"interface {self.identifier}:")
+        xadd(
+            utils.color.CYAN
+            + f"interface {self.identifier}:"
+            + utils.color.ENDC
+        )
         utils.tab += 1
         for new_entry in self.entries:
-            xadd(f"{new_entry.identifier} as {new_entry.value};")
+            xadd(
+                utils.color.YELLOW
+                + f"{new_entry.identifier}"
+                + utils.color.ENDC
+                + " as "
+                + utils.color.GREEN
+                + f"{new_entry.value};"
+                + utils.color.ENDC
+            )
         utils.tab -= 1
         xadd()
 

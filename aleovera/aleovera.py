@@ -42,13 +42,19 @@ def parse_args():
         choices=["pdf", "png", "svg"],
         help="Format of the graphs",
     )
+    m.add_argument(
+        "-color",
+        "--color",
+        action="store_true",
+        help="Print disassembler with color",
+    )
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
     with args.file[0] as f:
-        aleo = aleodisassembler(f.read())
+        aleo = aleodisassembler(f.read(), color=args.color)
     aleo.disassemble()
     aleo.print_disassembly()
     filename = os.path.basename(args.file[0].name).split(".")[0]

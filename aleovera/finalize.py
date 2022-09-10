@@ -81,7 +81,9 @@ class finalize_function:
         """
         Pretty print all the content of the function
         """
-        xadd(f"finalize {self.identifier}:")
+        xadd(
+            utils.color.BLUE + f"finalize {self.identifier}:" + utils.color.ENDC
+        )
         utils.tab += 1
         for i in range(self.number_inputs):
             self.registers[i].pretty_print()

@@ -48,13 +48,27 @@ class mapping:
         """
         Pretty print all the content of the mapping
         """
-        xadd(f"mapping {self.identifier}:")
+        xadd(
+            utils.color.CYAN + f"mapping {self.identifier}:" + utils.color.ENDC
+        )
         utils.tab += 1
         xadd(
-            f"key {self.key.identifier} as {self.key.value}.{self.key.attribute_type};"
+            utils.color.YELLOW
+            + f"key {self.key.identifier}"
+            + utils.color.ENDC
+            + " as "
+            + utils.color.GREEN
+            + f"{self.key.value}.{self.key.attribute_type};"
+            + utils.color.ENDC
         )
         xadd(
-            f"value {self.value.identifier} as {self.value.value}.{self.value.attribute_type};"
+            utils.color.YELLOW
+            + f"value {self.value.identifier}"
+            + utils.color.ENDC
+            + " as "
+            + utils.color.GREEN
+            + f"{self.value.value}.{self.value.attribute_type};"
+            + utils.color.ENDC
         )
         utils.tab -= 1
         xadd()

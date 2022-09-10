@@ -75,7 +75,11 @@ class function:
         """
         Pretty print all the content of the function
         """
-        xadd(f"{self.type} {self.identifier}:")
+        xadd(
+            utils.color.HEADER
+            + f"{self.type} {self.identifier}:"
+            + utils.color.ENDC
+        )
         utils.tab += 1
         for i in range(self.number_inputs):
             self.registers[i].pretty_print()

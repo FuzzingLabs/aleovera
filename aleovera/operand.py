@@ -115,9 +115,9 @@ class Operand:
     def fmt(self, caller_name=None):
         if self.type == OperandType.Caller:
             if caller_name:
-                return caller_name
+                return utils.color.BLUE + caller_name + utils.color.ENDC
             else:
-                return "self.caller"
+                return utils.color.BLUE + "self.caller" + utils.color.ENDC
 
         elif self.type == OperandType.ProgramID:
             res = ""

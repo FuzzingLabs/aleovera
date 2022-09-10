@@ -9,9 +9,10 @@ from . import utils
 
 
 class aleodisassembler:
-    def __init__(self, bytes) -> None:
+    def __init__(self, bytes, color=False) -> None:
         utils.tab_init()
         utils.aleo_output_init()
+        utils.color_init(color)
         self.bytecodes = bytecodes(bytes)
         self.version = None
         self.program_id = None

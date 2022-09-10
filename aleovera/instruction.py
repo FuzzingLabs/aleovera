@@ -145,7 +145,12 @@ class instruction:
         # If is sorted by from smallest array to the biggest
         if self.opcode is Opcode.Cast:
             # The output register of the cast is not of a register type
-            return f"cast {self.operands.fmt()} into r{self.output} as {self.cast}.record;"
+            return (
+                utils.color.RED
+                + f"cast"
+                + utils.color.ENDC
+                + f" {self.operands.fmt()} into r{self.output} as {self.cast}.record;"
+            )
 
         elif self.opcode is Opcode.Call:
             callee = ""
@@ -159,13 +164,28 @@ class instruction:
                 output += f"{reg.fmt()} "
             output = output[:-1]
 
-            return f"call {callee} {self.operands.fmt()} into {output};"
+            return (
+                utils.color.RED
+                + f"call"
+                + utils.color.ENDC
+                + f" {callee} {self.operands.fmt()} into {output};"
+            )
 
         elif self.opcode in ASSERT:
             if self.opcode is Opcode.AssertEq:
-                return f"assert.eq {self.operands.fmt()};"
+                return (
+                    utils.color.RED
+                    + f"assert.eq"
+                    + utils.color.ENDC
+                    + f" {self.operands.fmt()};"
+                )
             else:
-                return f"assert.neq {self.operands.fmt()};"
+                return (
+                    utils.color.RED
+                    + f"assert.neq"
+                    + utils.color.ENDC
+                    + f" {self.operands.fmt()};"
+                )
 
         elif (
             self.opcode is Opcode.Ternary
@@ -195,7 +215,7 @@ class instruction:
 
             elif self.opcode == Opcode.SquareRoot:
                 op = "sqrt"
-
+            op = utils.color.RED + op + utils.color.ENDC
             return f"{op} {self.operands.fmt()} into {self.output.fmt()};"
 
         else:
