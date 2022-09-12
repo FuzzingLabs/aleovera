@@ -32,15 +32,31 @@ def print_diff(ref, out):
     i = 0
     while i < outlen and i < fillen:
         if ref[i] != out[i]:
-            print(color.GREEN + f">>> {ref[i]}" + color.ENDC)
-            print(color.RED + f"<<< {out[i]}" + color.ENDC)
-	
+            print(
+                color.GREEN
+                + f">>> Line[{i}] - Len({len(out[i])}) : {ref[i]}"
+                + color.ENDC
+            )
+            print(
+                color.RED
+                + f"<<< Line[{i}] - Len({len(ref[i])}) : {out[i]}"
+                + color.ENDC
+            )
+
         i += 1
     while i < outlen:
-        print(color.RED + f"<<< {out[i]}" + color.ENDC)
+        print(
+            color.RED
+            + f"<<< Line[{i}] - Len({len(out[i])}) : {out[i]}"
+            + color.ENDC
+        )
         i += 1
     while i < fillen:
-        print(color.GREEN + f">>> {ref[i]}" + color.ENDC)
+        print(
+            color.GREEN
+            + f">>> Line[{i}] - Len({len(ref[i])}): {ref[i]}"
+            + color.ENDC
+        )
         i += 1
 
 
@@ -50,7 +66,7 @@ def build_and_test(cwd, folder, diff=False):
     print("-------------------", file=sys.stderr)
     print(folder, file=sys.stderr)
     os.chdir(folder)
-    subprocess.check_call("aleo build", shell=True, stdout=subprocess.DEVNULL)
+    # subprocess.check_call("aleo build", shell=True, stdout=subprocess.DEVNULL)
 
     if os.path.isfile("build/main.avm"):
         content = ""
@@ -68,7 +84,7 @@ def build_and_test(cwd, folder, diff=False):
             if line[:2] == "//":
                 continue
             file_lines.append(line.rstrip() + "\n")
-        file_lines[-1] = file_lines[-1][:-1] # Remove the last newline
+        file_lines[-1] = file_lines[-1][:-1]  # Remove the last newline
 
         content_file = "".join(file_lines)
         f.close()

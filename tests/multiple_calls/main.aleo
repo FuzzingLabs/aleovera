@@ -13,7 +13,6 @@ function difference:
     sub r0 r1 into r2;
     output r2 as u32.private;
 
-
 closure execute:
     input r0 as field;
     input r1 as field;
@@ -31,7 +30,6 @@ function compute:
     output r2 as field.private;
     output r3 as field.private;
     output r4 as field.private;
-
 
 function main:
     input r0 as u32.public;
