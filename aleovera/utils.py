@@ -87,10 +87,13 @@ def xprint(*args, end="\n"):
     print(tab_str + "".join(map(str, args)).lower(), end=end)
 
 
-def xexit():
+def xexit(error=""):
     exc_type, _, exc_tb = sys.exc_info()
     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-    print(exc_type, fname, exc_tb.tb_lineno)
+    if error == "":
+        print(exc_type, fname, exc_tb.tb_lineno)
+    else:
+        print(error)
     sys.exit()
 
 
