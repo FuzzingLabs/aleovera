@@ -33,7 +33,7 @@ class interface:
         value = self.bytecodes.read_u16()
         return value
 
-    def pretty_print(self):
+    def fmt(self):
         """
         Pretty print all the content of the interface
         """
@@ -70,4 +70,4 @@ class interface:
             new_entry.identifier = utils.read_identifier(self.bytecodes)
             new_entry.value = valueType.read_plaintext(self.bytecodes)
             self.entries.append(new_entry)
-        self.pretty_print()
+        self.fmt()

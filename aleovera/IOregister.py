@@ -17,7 +17,7 @@ class IOregister:
         self.register = None
         self.disassemble_IOregister(bytecodes)
 
-    def pretty_print(self):
+    def fmt(self):
         """
         Pretty print all the content of the IOregister
         """

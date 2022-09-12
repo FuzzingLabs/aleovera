@@ -71,7 +71,7 @@ class function:
         #        function_finalize.disassemble_function(bytecodes)
         self.finalizes.append(new_finalize)
 
-    def pretty_print(self):
+    def fmt(self):
         """
         Pretty print all the content of the function
         """
@@ -82,13 +82,13 @@ class function:
         )
         utils.tab += 1
         for i in range(self.number_inputs):
-            self.registers[i].pretty_print()
+            self.registers[i].fmt()
 
         for instruction in self.instructions:
             xadd(instruction.fmt())
 
         for i in range(self.number_outputs):
-            self.registers[i + self.number_inputs].pretty_print()
+            self.registers[i + self.number_inputs].fmt()
 
         if self.finalizes:
             xadd(f"finalize {self.finalizes[0].operands.fmt()};")
@@ -96,7 +96,7 @@ class function:
             xadd("")
         if len(self.finalizes) != 0:
             for finalize in self.finalizes:
-                finalize.function.pretty_print()
+                finalize.function.fmt()
         utils.tab -= 1
         xadd("")
 
@@ -126,4 +126,4 @@ class function:
             is_finalize = bytecodes.read_u8()
             if is_finalize == 1:
                 self.read_finalize(bytecodes)
-        self.pretty_print()
+        self.fmt()

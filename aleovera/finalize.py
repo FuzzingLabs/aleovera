@@ -78,7 +78,7 @@ class finalize_function:
         new_instruction.disassemble_instruction(bytecodes)
         self.instructions.append(new_instruction)
 
-    def pretty_print(self):
+    def fmt(self):
         """
         Pretty print all the content of the function
         """
@@ -87,13 +87,13 @@ class finalize_function:
         )
         utils.tab += 1
         for i in range(self.number_inputs):
-            self.registers[i].pretty_print()
+            self.registers[i].fmt()
 
         for instruction in self.instructions:
             xadd(instruction.fmt())
 
         for i in range(self.number_outputs):
-            self.registers[i + self.number_inputs].pretty_print()
+            self.registers[i + self.number_inputs].fmt()
 
         utils.tab -= 1
 

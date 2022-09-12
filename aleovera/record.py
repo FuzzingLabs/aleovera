@@ -25,7 +25,7 @@ class record:
         self.identifier = None
         self.disassemble_record(bytecodes)
 
-    def pretty_print(self):
+    def fmt(self):
         """
         Pretty print all the content of the record
         """
@@ -86,4 +86,4 @@ class record:
             new_entry.attribute_type = valueType.read_value_type(bytecodes)
             new_entry.value = valueType.read_plaintext(bytecodes)
             self.entries.append(new_entry)
-        self.pretty_print()
+        self.fmt()

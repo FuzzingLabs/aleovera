@@ -48,7 +48,7 @@ class mapping:
         self.value = None
         self.disassemble_mapping(bytecodes)
 
-    def pretty_print(self):
+    def fmt(self):
         """
         Pretty print all the content of the mapping
         """
@@ -87,4 +87,4 @@ class mapping:
         # Get key and value
         self.key = key_value(bytecodes)
         self.value = key_value(bytecodes)
-        self.pretty_print()
+        self.fmt()
