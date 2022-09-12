@@ -9,8 +9,11 @@ class bytecodes:
     """
 
     def __init__(self, bytes) -> None:
-        if bytes == None or len(bytes) == 0:
-            xexit("Empty Bytes")
+        try:
+            if bytes == None or len(bytes) == 0:
+                raise BufferError
+        except Exception as e:
+            xexit()
         self.bytecodes = bytes
 
     def read_u8(self):
@@ -142,11 +145,12 @@ class bytecodes:
         Returns:
             Byte: The bytes read
         """
-        if n > len(self.bytecodes):
-            xexit("Wrong bytecodes len")
-        res = self.bytecodes[:n]
-        self.bytecodes = self.bytecodes[n:]
-        return res
+        try:
+            res = self.bytecodes[:n]
+            self.bytecodes = self.bytecodes[n:]
+            return res
+        except Exception as e:
+            xexit()
 
     def peek(self):
         """Get the first byte
@@ -154,6 +158,7 @@ class bytecodes:
         Returns:
             Byte: The byte read
         """
-        if len(self.bytecodes) == 0:
-            xexit("Empty bytecodes")
-        return self.bytecodes[0]
+        try:
+            return self.bytecodes[0]
+        except Exception as e:
+            xexit()

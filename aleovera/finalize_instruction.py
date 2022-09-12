@@ -15,6 +15,8 @@ class finalize_instruction:
     """
 
     def __init__(self, opcode) -> None:
+        if opcode > 2 and opcode < 0:
+            raise IndexError
         self.opcode = opcode
         self.mapping = None
         self.first = None
