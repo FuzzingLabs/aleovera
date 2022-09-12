@@ -141,7 +141,7 @@ class bytecodes:
             Byte: The bytes read
         """
         if n > len(self.bytecodes):
-            xexit()
+            xexit("Wrong bytecodes len")
         res = self.bytecodes[:n]
         self.bytecodes = self.bytecodes[n:]
         return res
