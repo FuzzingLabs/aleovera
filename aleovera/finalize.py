@@ -57,10 +57,11 @@ class finalize_function:
         variant = bytecodes.read_u8()
         if variant == 1:
             self.read_instruction(bytecodes)
-        elif variant == 0 or variant == 2:
-            self.read_finalize_instruction(bytecodes, variant)
         else:
-            xexit()
+            try:
+                self.read_finalize_instruction(bytecodes, variant)
+            except Exception as e:
+                xexit()
 
     def read_finalize_instruction(self, bytecodes, opcode):
         new_finalize_instruction = finalize_instruction(opcode)
