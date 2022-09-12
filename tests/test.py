@@ -34,6 +34,7 @@ def print_diff(ref, out):
         if ref[i] != out[i]:
             print(color.GREEN + f">>> {ref[i]}" + color.ENDC)
             print(color.RED + f"<<< {out[i]}" + color.ENDC)
+	
         i += 1
     while i < outlen:
         print(color.RED + f"<<< {out[i]}" + color.ENDC)
@@ -67,6 +68,7 @@ def build_and_test(cwd, folder, diff=False):
             if line[:2] == "//":
                 continue
             file_lines.append(line.rstrip() + "\n")
+        file_lines[-1] = file_lines[-1][:-1] # Remove the last newline
 
         content_file = "".join(file_lines)
         f.close()
