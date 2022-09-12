@@ -3,6 +3,7 @@ from .register import register
 from . import valueType
 from . import utils
 from .operand import Operands
+from .utils import xexit
 
 
 class Opcode(Enum):
@@ -320,7 +321,10 @@ class instruction:
             bytecodes (bytecodes): The bytecodes object
         """
         index = bytecodes.read_u16()
-        self.opcode = Opcode(index)
+        try:
+            self.opcode = Opcode(index)
+        except Exception as e:
+            xexit()
         # Need to make lists of function using the same pattern as xor (input1, input2, output) to dont decompile wrongly
         if self.opcode is Opcode.Cast:
             self.read_cast_instruction(bytecodes)

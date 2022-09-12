@@ -39,6 +39,7 @@ class finalize_instruction:
         Args:
             bytecodes (bytecodes): The bytecodes object
         """
+
         self.mapping = utils.read_identifier(bytecodes)
         operands_list = Operands(2, bytecodes)
         self.first = operands_list.operands[0]

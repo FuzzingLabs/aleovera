@@ -1,3 +1,7 @@
+import traceback
+import sys
+import os
+
 # Graphical stuff for the CallFlowGraph's dot
 CALLGRAPH_CONFIG = {
     "default": {
@@ -83,6 +87,13 @@ def xprint(*args, end="\n"):
     print(tab_str + "".join(map(str, args)).lower(), end=end)
 
 
+def xexit():
+    exc_type, _, exc_tb = sys.exc_info()
+    fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+    print(exc_type, fname, exc_tb.tb_lineno)
+    sys.exit()
+
+
 class ProgramId:
     def __init__(self, bytecodes) -> None:
         self.name = None
@@ -91,10 +102,16 @@ class ProgramId:
 
     def parse_program_id(self, bytecodes):
         len_name = bytecodes.read_u8()
-        self.name = bytecodes.read_n(len_name).decode("utf-8")
+        try:
+            self.name = bytecodes.read_n(len_name).decode("utf-8")
+        except UnicodeDecodeError:
+            xexit()
 
         len_network = bytecodes.read_u8()
-        self.network = bytecodes.read_n(len_network).decode("utf-8")
+        try:
+            self.network = bytecodes.read_n(len_network).decode("utf-8")
+        except UnicodeDecodeError:
+            xexit()
 
     def fmt(self):
         return color.HEADER + f"{self.name}.{self.network}" + color.ENDC

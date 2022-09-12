@@ -1,6 +1,8 @@
 from . import utils
 from enum import Enum
 from .register import register
+from .utils import xexit
+from .valueType import LiteralType
 
 
 class OperandType(Enum):
@@ -10,28 +12,13 @@ class OperandType(Enum):
     Caller = 3
 
 
-class LiteralType(Enum):
-    address = 0
-    boolean = 1
-    field = 2
-    group = 3
-    i8 = 4
-    i16 = 5
-    i32 = 6
-    i64 = 7
-    i128 = 8
-    u8 = 9
-    u16 = 10
-    u32 = 11
-    u64 = 12
-    u128 = 13
-    scalar = 14
-    string = 15
-
-
 class Literal:
     def __init__(self, bytecodes, read_value=False) -> None:
-        self.type = LiteralType(bytecodes.read_u16())
+        self.type = None
+        try:
+            self.type = LiteralType(bytecodes.read_u16())
+        except Exception as e:
+            xexit()
         self.value = None
         self.has_value = read_value
         if read_value:
@@ -39,36 +26,36 @@ class Literal:
 
     def read_literal_value(self, bytecodes):
         res = "UNHANDLED LITERAL TYPE"
-        if self.type == LiteralType.i128 or self.type == LiteralType.u128:
-            if self.type == LiteralType.i128:
+        if self.type == LiteralType.I128 or self.type == LiteralType.U128:
+            if self.type == LiteralType.I128:
                 res = bytecodes.read_i128()
             else:
                 res = bytecodes.read_u128()
 
-        elif self.type == LiteralType.i64 or self.type == LiteralType.u64:
-            if self.type == LiteralType.i64:
+        elif self.type == LiteralType.I64 or self.type == LiteralType.U64:
+            if self.type == LiteralType.I64:
                 res = bytecodes.read_i64()
             else:
                 res = bytecodes.read_u64()
 
-        elif self.type == LiteralType.i32 or self.type == LiteralType.u32:
-            if self.type == LiteralType.i32:
+        elif self.type == LiteralType.I32 or self.type == LiteralType.U32:
+            if self.type == LiteralType.I32:
                 res = bytecodes.read_i32()
             else:
                 res = bytecodes.read_u32()
 
-        elif self.type == LiteralType.i16 or self.type == LiteralType.u16:
-            if self.type == LiteralType.i16:
+        elif self.type == LiteralType.I16 or self.type == LiteralType.U16:
+            if self.type == LiteralType.I16:
                 res = bytecodes.read_i16()
             else:
                 res = bytecodes.read_u16()
 
-        elif self.type == LiteralType.i8 or self.type == LiteralType.u8:
-            if self.type == LiteralType.i8:
+        elif self.type == LiteralType.I8 or self.type == LiteralType.U8:
+            if self.type == LiteralType.I8:
                 res = bytecodes.read_i8()
             else:
                 res = bytecodes.read_u8()
-        elif self.type == LiteralType.boolean:
+        elif self.type == LiteralType.Boolean:
             res = bytecodes.read_u8()
             if res == 0:
                 res = "false"
@@ -81,7 +68,7 @@ class Literal:
         res = ""
         if self.has_value:
             res = f"{self.value}"
-        if self.type != LiteralType.boolean:
+        if self.type != LiteralType.Boolean:
             res += self.type.name
         return res
 
@@ -93,7 +80,11 @@ class Operand:
         self.get_operand(bytecodes, read_value)
 
     def get_operand(self, bytecodes, read_value):
-        op_type = OperandType(bytecodes.read_u8())
+        op_type = None
+        try:
+            op_type = OperandType(bytecodes.read_u8())
+        except Exception as e:
+            xexit()
         self.type = op_type
 
         if op_type == OperandType.Literal:

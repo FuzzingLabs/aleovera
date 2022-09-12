@@ -1,6 +1,7 @@
 from .utils import xadd
 from . import valueType
 from . import utils
+from .utils import xexit
 
 
 class key_value:
@@ -22,14 +23,17 @@ class key_value:
         """
         self.identifier = utils.read_identifier(bytecodes)
         variant = bytecodes.read_u8()
-        if variant == 0:
-            self.attribute_type = valueType.attributeType(1).name
-        elif variant == 1:
-            self.attribute_type = valueType.attributeType(3).name
-        elif variant == 2:
-            self.attribute_type = valueType.attributeType(4).name
-        else:
-            print("error")
+        try:
+            if variant == 0:
+                self.attribute_type = valueType.attributeType(1).name
+            elif variant == 1:
+                self.attribute_type = valueType.attributeType(3).name
+            elif variant == 2:
+                self.attribute_type = valueType.attributeType(4).name
+            else:
+                print("error")
+        except Exception as e:
+            xexit()
         self.value = valueType.read_plaintext(bytecodes)
 
 

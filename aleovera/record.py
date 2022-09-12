@@ -1,6 +1,7 @@
 from .utils import xadd
 from . import valueType
 from . import utils
+from .utils import xexit
 
 
 class entry:
@@ -56,7 +57,10 @@ class record:
         new_entry = entry()
         new_entry.identifier = identifier
         value = bytecodes.read_u8()
-        new_entry.attribute_type = valueType.attributeType((value == 1) + 1)
+        try:
+            new_entry.attribute_type = valueType.attributeType((value == 1) + 1)
+        except Exception as e:
+            xexit()
         new_entry.value = (
             valueType.LiteralType(12).name
             if (identifier == "gates")

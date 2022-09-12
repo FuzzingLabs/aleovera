@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from .utils import xexit
 from . import utils
 
 
@@ -61,8 +62,11 @@ def read_plaintext_literal(bytecodes):
         LiteralType: the LiteralType
     """
     res = bytecodes.read_u16()
-    res = LiteralType(res).name
-    return res
+    try:
+        res = LiteralType(res).name
+        return res
+    except Exception as e:
+        xexit()
 
 
 def read_plaintext(bytecodes):
@@ -90,13 +94,16 @@ def read_finalize_value_type(bytecodes):
     Returns:
         attributeType: the AttributeType
     """
-    attribute_type = attributeType_finalize(bytecodes.read_u8())
-    if attribute_type == attributeType_finalize.public:
-        return attributeType.public
-    if attribute_type == attributeType_finalize.record:
-        return attributeType.record
-    if attribute_type == attributeType_finalize.externalrecord:
-        return attributeType.externalrecord
+    try:
+        attribute_type = attributeType_finalize(bytecodes.read_u8())
+        if attribute_type == attributeType_finalize.public:
+            return attributeType.public
+        if attribute_type == attributeType_finalize.record:
+            return attributeType.record
+        if attribute_type == attributeType_finalize.externalrecord:
+            return attributeType.externalrecord
+    except Exception as e:
+        xexit()
 
 
 def read_value_type(bytecodes):
@@ -108,5 +115,7 @@ def read_value_type(bytecodes):
     Returns:
         attributeType: the AttributeType
     """
-    attribute_type = attributeType(bytecodes.read_u8())
-    return attribute_type
+    try:
+        return attributeType(bytecodes.read_u8())
+    except Exception as e:
+        xexit()
