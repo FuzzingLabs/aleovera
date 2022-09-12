@@ -9,6 +9,8 @@ class bytecodes:
     """
 
     def __init__(self, bytes) -> None:
+        if bytes == None or len(bytes) == 0:
+            xexit("Empty Bytes")
         self.bytecodes = bytes
 
     def read_u8(self):
@@ -152,4 +154,6 @@ class bytecodes:
         Returns:
             Byte: The byte read
         """
+        if len(self.bytecodes) == 0:
+            xexit("Empty bytecodes")
         return self.bytecodes[0]
