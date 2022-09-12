@@ -144,12 +144,15 @@ class instruction:
         """
         # If is sorted by from smallest array to the biggest
         if self.opcode is Opcode.Cast:
+            endline = ""
+            if self.variant == 1:
+                endline = ".record"
             # The output register of the cast is not of a register type
             return (
                 utils.color.RED
                 + f"cast"
                 + utils.color.ENDC
-                + f" {self.operands.fmt()} into r{self.output} as {self.cast}.record;"
+                + f" {self.operands.fmt()} into r{self.output} as {self.cast}{endline};"
             )
 
         elif self.opcode is Opcode.Call:
@@ -267,12 +270,13 @@ class instruction:
         # Get output register, its formatted like an IO register
         if bytecodes.read_u8() != 0:
             return "Error in cast"
-
         self.output = bytecodes.read_u8()
 
         # Get casted type (Should be a single string) but stored weirdly, need to improve
         valtype = bytecodes.peek()
         self.cast = "ERROR PARSING CAST TYPE"
+        print(f"ValTYPE {valtype}")
+        self.variant = valtype
         if valtype == 0:
             bytecodes.read_u8()
             self.cast = valueType.read_plaintext(bytecodes)
