@@ -92,13 +92,13 @@ class function:
 
         if self.finalizes:
             xadd(f"finalize {self.finalizes[0].operands.fmt()};")
-        xadd("")
-        if len(self.finalizes) != 0:
             utils.tab -= 1
+            xadd("")
+        if len(self.finalizes) != 0:
             for finalize in self.finalizes:
                 finalize.function.pretty_print()
-
         utils.tab -= 1
+        xadd("")
 
     def disassemble_function(self, bytecodes):
         """Disassemble the function

@@ -34,12 +34,12 @@ def print_diff(ref, out):
         if ref[i] != out[i]:
             print(
                 color.GREEN
-                + f">>> Line[{i}] - Len({len(out[i])}) : {ref[i]}"
+                + f">>> Ref: Line[{i}] - Len({len(ref[i])}) : {ref[i]}"
                 + color.ENDC
             )
             print(
                 color.RED
-                + f"<<< Line[{i}] - Len({len(ref[i])}) : {out[i]}"
+                + f"<<< Out: Line[{i}] - Len({len(out[i])}) : {out[i]}"
                 + color.ENDC
             )
 
@@ -47,14 +47,14 @@ def print_diff(ref, out):
     while i < outlen:
         print(
             color.RED
-            + f"<<< Line[{i}] - Len({len(out[i])}) : {out[i]}"
+            + f"<<< Out: Line[{i}] - Len({len(out[i])}) : {out[i]}"
             + color.ENDC
         )
         i += 1
     while i < fillen:
         print(
             color.GREEN
-            + f">>> Line[{i}] - Len({len(ref[i])}): {ref[i]}"
+            + f">>> Ref: Line[{i}] - Len({len(ref[i])}) : {ref[i]}"
             + color.ENDC
         )
         i += 1

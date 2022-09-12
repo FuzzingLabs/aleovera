@@ -22,7 +22,7 @@ closure execute:
     output r4 as field;
     output r3 as field;
     output r2 as field;
-    
+
 function compute:
     input r0 as field.private;
     input r1 as field.public;
