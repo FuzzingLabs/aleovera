@@ -129,13 +129,13 @@ def read_variable_length_integer(bytecodes):
     if flag >= 0 and flag <= 252:
         return flag
     elif flag == 0xFD:
-        bytecodes = bytecodes[2:]
+        bytecodes = bytecodes.read_u16()
         return 16
     elif flag == 0xFE:
-        bytecodes = bytecodes[4:]
+        bytecodes = bytecodes.read_u32()
         return 32
     else:
-        bytecodes = bytecodes[8:]
+        bytecodes = bytecodes.read_u64()
         return 64
 
 
@@ -165,8 +165,10 @@ def read_identifier(bytecodes):
         String: The identifier string
     """
     len_identifier = bytecodes.read_u8()
-    identifier = bytecodes.read_n(len_identifier).decode("utf-8")
-    return identifier
+    try:
+        return bytecodes.read_n(len_identifier).decode("utf-8")
+    except Exception as e:
+        xexit()
 
 
 def read_locator(bytecodes):

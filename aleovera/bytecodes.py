@@ -141,7 +141,7 @@ class bytecodes:
             Byte: The bytes read
         """
         if n > len(self.bytecodes):
-            sys.exit(traceback.format_exc())
+            xexit()
         res = self.bytecodes[:n]
         self.bytecodes = self.bytecodes[n:]
         return res

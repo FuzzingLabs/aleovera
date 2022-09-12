@@ -4,7 +4,7 @@ from .instruction import instruction
 from .finalize_instruction import finalize_instruction
 from .operand import Operands
 from . import utils
-import sys
+from .utils import xexit
 
 
 class finalize_function:
@@ -60,7 +60,7 @@ class finalize_function:
         elif variant == 0 or variant == 2:
             self.read_finalize_instruction(bytecodes, variant)
         else:
-            sys.exit("Error command does not exist")
+            xexit()
 
     def read_finalize_instruction(self, bytecodes, opcode):
         new_finalize_instruction = finalize_instruction(opcode)
