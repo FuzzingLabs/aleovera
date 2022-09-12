@@ -33,6 +33,7 @@ class Literal:
     def __init__(self, bytecodes, read_value=False) -> None:
         self.type = LiteralType(bytecodes.read_u16())
         self.value = None
+        self.has_value = read_value
         if read_value:
             self.value = self.read_literal_value(bytecodes)
 
@@ -78,7 +79,7 @@ class Literal:
 
     def fmt(self):
         res = ""
-        if self.value:
+        if self.has_value:
             res = f"{self.value}"
         if self.type != LiteralType.boolean:
             res += self.type.name
