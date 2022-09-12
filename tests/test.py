@@ -26,7 +26,7 @@ color = bcolors(True)
 
 
 def print_diff(ref, out):
-    out = out.split("\n")
+    out = out.splitlines(True)
     outlen = len(out)
     fillen = len(ref)
     i = 0
