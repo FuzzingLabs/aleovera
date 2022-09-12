@@ -275,7 +275,6 @@ class instruction:
         # Get casted type (Should be a single string) but stored weirdly, need to improve
         valtype = bytecodes.peek()
         self.cast = "ERROR PARSING CAST TYPE"
-        print(f"ValTYPE {valtype}")
         self.variant = valtype
         if valtype == 0:
             bytecodes.read_u8()
