@@ -27,7 +27,7 @@ aleovera -f ./build/main.avm
 ```sh
 aleovera -f tests/finalize/build/main.avm -color
 ```
-<figure style="display: inline-block;text-align: center;"><img src="./images/ref.png"/> <figcaption> Source Code </figcaption></figure> <figure style="display: inline-block;text-align: center;"><img src="./images/output.png"/><figcaption> AleoVera disassembler </figcaption></figure>
+<img src="./images/disassembler.png"/>
 
 
 ## Print the contract's call graph 
