@@ -1,7 +1,7 @@
 # AleoVera, the aleo bytecode analyzer and disassembler
 <img src ="https://img.shields.io/badge/python-3.10-blue.svg"/>
 
-AleoVera is an Aleo analyzer & disassembler written in Python 3. AleoVera's features also include the generation of the call graph and control-flow graph (CFG) of a given Aleo compilation artifact.
+AleoVera is an Aleo analyzer & disassembler written in Python 3. AleoVera's features also include the generation of the call graph of a given Aleo compilation artifact (.avm).
 
 ## Installation
 
