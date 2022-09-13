@@ -23,6 +23,12 @@ cd foo
 aleo build
 aleovera -f ./build/main.avm
 ```
+### Example :
+```sh
+aleovera -f tests/finalize/build/main.avm -color
+```
+<figure style="display: inline-block;text-align: center;"><img src="./images/ref.png"/> <figcaption> Source Code </figcaption></figure> <figure style="display: inline-block;text-align: center;"><img src="./images/output.png"/><figcaption> AleoVera disassembler </figcaption></figure>
+
 
 ## Print the contract's call graph 
 The call flow graph represents calling relationships between functions, imported functions and closures of the contract.
@@ -30,7 +36,7 @@ The call flow graph represents calling relationships between functions, imported
 ```sh
  python3 main.py -f tests/multiple_calls/build/main.avm -c
  ```
-<img src="/images/call_flow_graph.png"/></br>
+<img src="./images/call_flow_graph.png"/></br>
 
 # F.A.Q
 ## How to run the tests?
