@@ -41,7 +41,7 @@ class Opcode(Enum):
     IsNeq = auto()
     LessThan = auto()
     LessThanOrEqual = auto()
-    Modulo = auto()
+    Mod = auto()
     Mul = auto()
     MulWrapped = auto()
     Nand = auto()
@@ -119,10 +119,11 @@ BINARY = [
     Opcode.CommitBHP1024,
     Opcode.CommitPED64,
     Opcode.CommitPED128,
-    Opcode.Modulo,
+    Opcode.Mod,
 ]
 
 ASSERT = [Opcode.AssertEq, Opcode.AssertNeq]
+IS_CHECK = [Opcode.IsEq, Opcode.IsNeq]
 
 
 class instruction:
@@ -191,6 +192,22 @@ class instruction:
                     + utils.color.ENDC
                     + f" {self.operands.fmt()};"
                 )
+        
+        elif self.opcode in IS_CHECK:
+            if self.opcode is Opcode.IsEq:
+                return (
+                    utils.color.RED
+                    + f"is.eq"
+                    + utils.color.ENDC
+                    + f" {self.operands.fmt()} into {self.output.fmt()};"
+                )
+            else:
+                return (
+                    utils.color.RED
+                    + f"is.neq"
+                    + utils.color.ENDC
+                    + f" {self.operands.fmt()} into {self.output.fmt()};"
+                )
 
         elif (
             self.opcode is Opcode.Ternary
@@ -232,7 +249,7 @@ class instruction:
         Args:
             bytecodes (bytecodes): The bytecodes object
         """
-        self.operands = Operands(2, bytecodes, True)
+        self.operands = Operands(3, bytecodes, True)
         self.output = register(bytecodes)
 
     def read_binary_instruction(self, bytecodes):
