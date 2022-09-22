@@ -97,7 +97,6 @@ def build_and_test(cwd, folder, diff=False):
 
         content_file = "".join(file_lines)
         f.close()
-        print(content_file)
         ratio = SequenceMatcher(None, output, content_file).ratio()
         if ratio != 1 and diff:
             print_diff(file_lines, output)
