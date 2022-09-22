@@ -80,14 +80,24 @@ def build_and_test(cwd, folder, diff=False):
         f = open("main.aleo")
         unparsed_lines = f.readlines()
         file_lines = []
+        previous_empty = False # Used to skip double empty line
         for line in unparsed_lines:
-            if line[:2] == "//":
+            if previous_empty and line[0] == '\n': # Skip empty lines
                 continue
+            previous_empty = True
+            comment_index = line.find("//")
+            if comment_index == 0 or line.lstrip().find("//") == 0: # If line starts with a comment marker or with spaces and comment marker
+                continue
+            if comment_index > 0:
+                line = line[:comment_index] # Take the line until the comment
+
+            previous_empty = False # Line's not empty
             file_lines.append(line.rstrip() + "\n")
         file_lines[-1] = file_lines[-1][:-1]  # Remove the last newline
 
         content_file = "".join(file_lines)
         f.close()
+        print(content_file)
         ratio = SequenceMatcher(None, output, content_file).ratio()
         if ratio != 1 and diff:
             print_diff(file_lines, output)
