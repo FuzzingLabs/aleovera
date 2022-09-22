@@ -119,6 +119,7 @@ BINARY = [
     Opcode.CommitBHP1024,
     Opcode.CommitPED64,
     Opcode.CommitPED128,
+    Opcode.Modulo,
 ]
 
 ASSERT = [Opcode.AssertEq, Opcode.AssertNeq]
@@ -321,7 +322,9 @@ class instruction:
             bytecodes (bytecodes): The bytecodes object
         """
         index = bytecodes.read_u16()
+        # utils.debug_aleo_output()
         try:
+            # print(index)
             self.opcode = Opcode(index)
         except Exception as e:
             xexit()

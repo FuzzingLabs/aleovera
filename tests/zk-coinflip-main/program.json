@@ -1,0 +1,10 @@
+{
+    "program": "coinflip.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkp76mudqhsk6dYWnoxDsJeZHPgvykvCXZwv9PqvAo6fxVt",
+        "address": "aleo1kme6jxsfkt4gc8j5q3zv3x35u2lpm0vezmpnw3hx5qyg9lkt0yfqqf8gz0"
+    },
+    "license": "MIT"
+}

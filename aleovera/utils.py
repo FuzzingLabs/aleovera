@@ -71,6 +71,10 @@ def aleo_output_init():
     aleo_output = ""
 
 
+def debug_aleo_output():
+    print(aleo_output)
+
+
 def xadd(*args, end="\n"):
     global aleo_output
     tab_str = "    " * tab
