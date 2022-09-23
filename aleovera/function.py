@@ -97,7 +97,8 @@ class function:
         if len(self.finalizes) != 0:
             for finalize in self.finalizes:
                 finalize.function.fmt()
-        utils.tab -= 1
+        else:
+            utils.tab -= 1
         xadd("")
 
     def disassemble_function(self, bytecodes):

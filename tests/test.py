@@ -34,12 +34,12 @@ def print_diff(ref, out):
         if ref[i] != out[i]:
             print(
                 color.GREEN
-                + f">>> Ref: Line[{i}] - Len({len(ref[i])}) : {ref[i]}"
+                + f">>> Ref: Line[{i + 1}] - Len({len(ref[i])}) : {ref[i]}"
                 + color.ENDC
             )
             print(
                 color.RED
-                + f"<<< Out: Line[{i}] - Len({len(out[i])}) : {out[i]}"
+                + f"<<< Out: Line[{i + 1}] - Len({len(out[i])}) : {out[i]}"
                 + color.ENDC
             )
 
@@ -47,14 +47,14 @@ def print_diff(ref, out):
     while i < outlen:
         print(
             color.RED
-            + f"<<< Out: Line[{i}] - Len({len(out[i])}) : {out[i]}"
+            + f"<<< Out: Line[{i + 1}] - Len({len(out[i])}) : {out[i]}"
             + color.ENDC
         )
         i += 1
     while i < fillen:
         print(
             color.GREEN
-            + f">>> Ref: Line[{i}] - Len({len(ref[i])}) : {ref[i]}"
+            + f">>> Ref: Line[{i + 1}] - Len({len(ref[i])}) : {ref[i]}"
             + color.ENDC
         )
         i += 1
@@ -79,19 +79,23 @@ def build_and_test(cwd, folder, diff=False):
         output = aleo.fmt()
         f = open("main.aleo")
         unparsed_lines = f.readlines()
+        for i in range(len(unparsed_lines)):
+            unparsed_lines[i] = unparsed_lines[i].lower()
         file_lines = []
-        previous_empty = False # Used to skip double empty line
+        previous_empty = False  # Used to skip double empty line
         for line in unparsed_lines:
-            if previous_empty and line[0] == '\n': # Skip empty lines
+            if previous_empty and line[0] == "\n":  # Skip empty lines
                 continue
             previous_empty = True
             comment_index = line.find("//")
-            if comment_index == 0 or line.lstrip().find("//") == 0: # If line starts with a comment marker or with spaces and comment marker
+            if (
+                comment_index == 0 or line.lstrip().find("//") == 0
+            ):  # If line starts with a comment marker or with spaces and comment marker
                 continue
             if comment_index > 0:
-                line = line[:comment_index] # Take the line until the comment
+                line = line[:comment_index]  # Take the line until the comment
 
-            previous_empty = False # Line's not empty
+            previous_empty = False  # Line's not empty
             file_lines.append(line.rstrip() + "\n")
         file_lines[-1] = file_lines[-1][:-1]  # Remove the last newline
 

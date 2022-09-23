@@ -43,6 +43,6 @@ class finalize_instruction:
         """
 
         self.mapping = utils.read_identifier(bytecodes)
-        operands_list = Operands(2, bytecodes)
+        operands_list = Operands(2, bytecodes, read_value=True)
         self.first = operands_list.operands[0]
         self.second = operands_list.operands[1]

@@ -17,20 +17,20 @@ record Ticket:
     pid as field.private;
 
 mapping proposals:
-	key left as field.public;
-	value right as ProposalInfo.public;
+    key left as field.public;
+    value right as ProposalInfo.public;
 
 mapping tickets:
-	key left as field.public;
-	value right as u64.public;
+    key left as field.public;
+    value right as u64.public;
 
 mapping agree_votes:
-	key left as field.public;
-	value right as u64.public;
+    key left as field.public;
+    value right as u64.public;
 
 mapping disagree_votes:
-	key left as field.public;
-	value right as u64.public;
+    key left as field.public;
+    value right as u64.public;
 
 function propose:
     input r0 as ProposalInfo.public;
@@ -70,4 +70,3 @@ function disagree:
 finalize disagree:
     input r0 as field.public;
     increment disagree_votes[r0] by 1u64;
-
