@@ -58,6 +58,7 @@ class function:
         new_instruction = instruction()
         new_instruction.disassemble_instruction(bytecodes)
         self.instructions.append(new_instruction)
+        print(new_instruction.fmt())
 
     def read_finalize(self, bytecodes):
         """Read the finalize
@@ -107,6 +108,7 @@ class function:
             bytecodes (_type_): _description_
         """
         self.identifier = utils.read_identifier(bytecodes)
+        print(self.identifier)
         ###inputs
         self.number_inputs = self.read_function_number_IOregister(bytecodes)
         for _ in range(self.number_inputs):

@@ -136,14 +136,14 @@ def read_variable_length_integer(bytecodes):
     if flag >= 0 and flag <= 252:
         return flag
     elif flag == 0xFD:
-        bytecodes = bytecodes.read_u16()
-        return 16
+        flag = bytecodes.read_u16()
+        return flag
     elif flag == 0xFE:
-        bytecodes = bytecodes.read_u32()
-        return 32
+        flag = bytecodes.read_u32()
+        return flag
     else:
-        bytecodes = bytecodes.read_u64()
-        return 64
+        flag = bytecodes.read_u64()
+        return flag
 
 
 def read_identifiers(bytecodes):

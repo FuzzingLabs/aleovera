@@ -192,7 +192,7 @@ class instruction:
                     + utils.color.ENDC
                     + f" {self.operands.fmt()};"
                 )
-        
+
         elif self.opcode in IS_CHECK:
             if self.opcode is Opcode.IsEq:
                 return (
@@ -341,7 +341,6 @@ class instruction:
         index = bytecodes.read_u16()
         # utils.debug_aleo_output()
         try:
-            # print(index)
             self.opcode = Opcode(index)
         except Exception as e:
             xexit()
@@ -354,6 +353,9 @@ class instruction:
             self.read_ternary_instruction(bytecodes)
         elif self.opcode in ASSERT:
             self.read_assert_instruction(bytecodes)
+            print()
+            print("after")
+            print(bytecodes.bytecodes)
         elif self.opcode in UNARY:
             self.read_unary_instruction(bytecodes)
         elif self.opcode in BINARY:
