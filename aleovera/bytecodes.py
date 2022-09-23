@@ -65,13 +65,25 @@ class bytecodes:
         return res
 
     def read_u128(self):
-        """read 8 bytes
+        """read 16 bytes
 
         Returns:
             Int: the int format of the bytes
         """
         try:
             res = int.from_bytes(self.read_n(16), "little", signed=False)
+        except Exception as e:
+            xexit()
+        return res
+
+    def read_u256(self):
+        """read 32 bytes
+
+        Returns:
+            Int: the int format of the bytes
+        """
+        try:
+            res = int.from_bytes(self.read_n(32), "little", signed=False)
         except Exception as e:
             xexit()
         return res
@@ -132,6 +144,18 @@ class bytecodes:
         """
         try:
             res = int.from_bytes(self.read_n(16), "little", signed=True)
+        except Exception as e:
+            xexit()
+        return res
+
+    def read_u256(self):
+        """read 32 bytes
+
+        Returns:
+            Int: the int format of the bytes
+        """
+        try:
+            res = int.from_bytes(self.read_n(32), "little", signed=True)
         except Exception as e:
             xexit()
         return res

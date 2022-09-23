@@ -353,9 +353,6 @@ class instruction:
             self.read_ternary_instruction(bytecodes)
         elif self.opcode in ASSERT:
             self.read_assert_instruction(bytecodes)
-            print()
-            print("after")
-            print(bytecodes.bytecodes)
         elif self.opcode in UNARY:
             self.read_unary_instruction(bytecodes)
         elif self.opcode in BINARY:

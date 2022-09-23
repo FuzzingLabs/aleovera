@@ -3,7 +3,7 @@ from enum import Enum
 from .register import register
 from .utils import xexit
 from .valueType import LiteralType
-
+import base64
 
 class OperandType(Enum):
     Literal = 0
@@ -62,11 +62,9 @@ class Literal:
             else:
                 res = "true"
         elif self.type == LiteralType.Address:
-            s = "t0uer3jgtsgmx5tq6x6f9ecu8tr57rzzfnc2dgmcqldceal0ls9qf6st7a"
-            print(list(map(lambda c: hex(ord(c)), s)))
-            print()
-            print(bytecodes.bytecodes)
-            # bytecodes.read_n()
+            # Composed of 4 u64
+            x = bytecodes.read_u256()
+            # from_x_coordinate(x, True)
             res = "aleo1"
         # res = "aleo1" + bytecodes.read_n(58).decode("utf-8")
         return res
