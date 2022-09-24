@@ -61,7 +61,10 @@ class Literal:
                 res = "false"
             else:
                 res = "true"
-
+        elif self.type == LiteralType.Scalar:
+            res = bytecodes.read_u8()  ## TO FIX
+        elif self.type == LiteralType.Field:
+            res = bytecodes.read_u8()  ## TO FIX
         return res
 
     def fmt(self):
