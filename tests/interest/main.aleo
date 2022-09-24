@@ -1,7 +1,5 @@
 program interest.aleo;
 
-
-
 function fixed_iteration_interest:
     input r0 as u32.private;
     input r1 as u32.public;
@@ -394,4 +392,3 @@ function bounded_iteration_interest:
     ternary r15 r14 r351 into r352;
     ternary r9 r8 r352 into r353;
     output r353 as u32.private;
-
