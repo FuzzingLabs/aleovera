@@ -1,12 +1,10 @@
 program twoadicity.aleo;
 
-
 closure is_even_and_nonzero:
     input r0 as field;
     div r0 2field into r1;
     lt r1 r0 into r2;
     output r2 as boolean;
-
 
 function main:
     input r0 as field.public;
@@ -1271,4 +1269,3 @@ function main:
     ternary r1256 r1257 r1254 into r1259;
     ternary r1256 r1258 r1255 into r1260;
     output r1260 as u8.private;
-

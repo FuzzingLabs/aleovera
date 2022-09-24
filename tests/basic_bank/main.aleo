@@ -8,6 +8,7 @@ record Token:
 mapping balances:
 	key left as field.public;
 	value right as u64.public;
+
 closure calculate_interest:
     input r0 as u64;
     input r1 as u64;

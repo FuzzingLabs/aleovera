@@ -1,7 +1,5 @@
 program bubblesort.aleo;
 
-
-
 function bubble_sort:
     input r0 as u32.private;
     input r1 as u32.private;
@@ -103,4 +101,3 @@ function bubble_sort:
     output r61 as u32.private;
     output r46 as u32.private;
     output r28 as u32.private;
-

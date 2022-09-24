@@ -6,8 +6,8 @@ record token:
     amount as u64.private;
 
 mapping account:
-	key left as address.public;
-	value right as u64.public;
+    key left as address.public;
+    value right as u64.public;
 
 function mint_public:
     input r0 as address.public;
@@ -72,4 +72,3 @@ finalize transfer_public_to_private:
     input r0 as address.public;
     input r1 as u64.public;
     decrement account[r0] by r1;
-

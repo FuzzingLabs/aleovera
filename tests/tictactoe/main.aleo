@@ -62,7 +62,6 @@ closure check_for_win:
     or r42 r47 into r48;
     output r48 as boolean;
 
-
 function new:
     cast 0u8 0u8 0u8 into r0 as Row;
     cast 0u8 0u8 0u8 into r1 as Row;
@@ -233,4 +232,3 @@ function make_move:
     ternary r107 1u8 r142 into r156;
     output r155 as Board.private;
     output r156 as u8.private;
-
