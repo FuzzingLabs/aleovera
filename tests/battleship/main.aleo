@@ -3,8 +3,6 @@ import move.aleo;
 import verify.aleo;
 program battleship.aleo;
 
-
-
 function initialize_board:
     input r0 as u64.private;
     input r1 as u64.private;
@@ -53,4 +51,3 @@ function play:
     call move.aleo/create_move r1 r2 r5 into r6;
     output r4 as board.aleo/board_state.record;
     output r6 as move.aleo/move.record;
-
