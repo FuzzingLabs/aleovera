@@ -46,7 +46,12 @@ class function:
             IO_type (String): the IO_type (input/output)
             bytecodes (bytecodes): The bytecodes object
         """
-        new_register = IOregister(IO_type, bytecodes)
+        new_register = IOregister(
+            IO_type,
+            bytecodes,
+            closure=self.type == "closure",
+            function=self.type == "function",
+        )
         self.registers.append(new_register)
 
     def read_instruction(self, bytecodes):

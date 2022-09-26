@@ -148,7 +148,7 @@ class instruction:
         # If is sorted by from smallest array to the biggest
         if self.opcode is Opcode.Cast:
             endline = ""
-            if self.variant == 1:
+            if self.variant == 1 and not utils.check_interface_name(self.cast):
                 endline = ".record"
             # The output register of the cast is not of a register type
             return (
@@ -192,7 +192,7 @@ class instruction:
                     + utils.color.ENDC
                     + f" {self.operands.fmt()};"
                 )
-        
+
         elif self.opcode in IS_CHECK:
             if self.opcode is Opcode.IsEq:
                 return (

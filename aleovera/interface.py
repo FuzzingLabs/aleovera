@@ -64,6 +64,7 @@ class interface:
         """
         self.bytecodes = bytecodes
         self.identifier = utils.read_identifier(bytecodes)
+        utils.add_interface_name(self.identifier)
         num_entries = self.read_interface_num_entries()
         for _ in range(num_entries):
             new_entry = entry()

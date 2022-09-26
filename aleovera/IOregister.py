@@ -1,4 +1,4 @@
-from .utils import xadd
+from .utils import xadd, xexit
 from .register import register
 from . import utils
 from . import valueType
@@ -9,9 +9,13 @@ class IOregister:
     The IOregister class. Can be an input or an output.
     """
 
-    def __init__(self, IO_type, bytecodes, finalize=False) -> None:
+    def __init__(
+        self, IO_type, bytecodes, closure=False, finalize=False, function=False
+    ) -> None:
         self.IO_type = IO_type
         self.finalize = finalize
+        self.function = function
+        self.closure = closure
         self.value = None
         self.attribute_type = None
         self.register = None
@@ -33,20 +37,36 @@ class IOregister:
         if (
             self.attribute_type != valueType.attributeType.record
             and self.attribute_type != valueType.attributeType.externalrecord
+            and self.attribute_type != valueType.attributeType_finalize.record
+            and self.attribute_type
+            != valueType.attributeType_finalize.externalrecord
         ):
-            if (
-                self.value == "Field"
-                and self.attribute_type == valueType.attributeType.constant
-            ):
+            if self.closure:
+                # closure always has constant
                 res += utils.color.GREEN + f"{self.value}" + utils.color.ENDC
             else:
-                res += (
-                    utils.color.GREEN
-                    + f"{self.value}.{valueType.attributeType(self.attribute_type).name}"
-                    + utils.color.ENDC
-                )
-        else:
+                try:
+                    res += (
+                        utils.color.GREEN
+                        + f"{self.value}.{valueType.attributeType(self.attribute_type).name}"
+                        + utils.color.ENDC
+                    )
+                except Exception:
+                    try:
+                        res += (
+                            utils.color.GREEN
+                            + f"{self.value}.{valueType.attributeType_finalize(self.attribute_type).name}"
+                            + utils.color.ENDC
+                        )
+                    except Exception:
+                        xexit()
+        elif (
+            self.attribute_type == valueType.attributeType.record
+            or self.attribute_type == valueType.attributeType.externalrecord
+        ):
             res += utils.color.GREEN + f"{self.value}.record" + utils.color.ENDC
+        else:
+            res += utils.color.GREEN + f"{self.value}" + utils.color.ENDC
         res += ";"
         xadd(res)
 
@@ -58,20 +78,16 @@ class IOregister:
         """
         self.register = register(bytecodes)
         ### get valueType
-        if self.finalize:
-            self.attribute_type = valueType.read_finalize_value_type(bytecodes)
-        else:
-            self.attribute_type = valueType.read_value_type(bytecodes)
-        if (
-            self.attribute_type == valueType.attributeType.constant
-            or self.attribute_type == valueType.attributeType.public
-            or self.attribute_type == valueType.attributeType.private
-        ):
-            self.value = valueType.read_plaintext(bytecodes)
-        elif self.attribute_type == valueType.attributeType.record:
-            self.value = utils.read_identifier(bytecodes)
-        elif self.attribute_type == valueType.attributeType.externalrecord:
-            read_external = utils.read_external(bytecodes)
-            self.value = read_external[0].fmt() + "/" + read_external[1]
-        else:
-            print("fail")
+        # utils.debug_aleo_output()
+        if self.closure:
+            self.value = valueType.read_closure_register_type(bytecodes)
+        elif self.finalize:
+            (
+                self.attribute_type,
+                self.value,
+            ) = valueType.read_finalize_value_type(bytecodes)
+        elif self.function:
+            (
+                self.attribute_type,
+                self.value,
+            ) = valueType.read_function_value_type(bytecodes)

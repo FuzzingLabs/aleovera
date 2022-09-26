@@ -96,14 +96,52 @@ def read_finalize_value_type(bytecodes):
     """
     try:
         attribute_type = attributeType_finalize(bytecodes.read_u8())
-        if attribute_type == attributeType_finalize.public:
-            return attributeType.public
-        if attribute_type == attributeType_finalize.record:
-            return attributeType.record
-        if attribute_type == attributeType_finalize.externalrecord:
-            return attributeType.externalrecord
-    except Exception as e:
+    except Exception:
         xexit()
+
+    if attribute_type == attributeType_finalize.public:
+        value = read_plaintext(bytecodes)
+    if attribute_type == attributeType_finalize.record:
+        value = utils.read_identifier(bytecodes)
+    if attribute_type == attributeType_finalize.externalrecord:
+        value = utils.read_locator(bytecodes)
+    return (attribute_type, value)
+
+
+def read_function_value_type(bytecodes):
+    attribute_type = read_value_type(bytecodes)
+    try:
+        attributeType(attribute_type)
+    except Exception:
+        xexit()
+    if (
+        attribute_type == attributeType.constant
+        or attribute_type == attributeType.public
+        or attribute_type == attributeType.private
+    ):
+        value = read_plaintext(bytecodes)
+    elif attribute_type == attributeType.record:
+        value = utils.read_identifier(bytecodes)
+    elif attribute_type == attributeType.externalrecord:
+        read_external = utils.read_external(bytecodes)
+        value = read_external[0].fmt() + "/" + read_external[1]
+    return (attribute_type, value)
+
+
+def read_closure_register_type(bytecodes):
+    variant = bytecodes.read_u8()
+    type = [0, 1, 2]
+    #### Check if variant is a plaintext,identifier or locator, if it's not, call xexit
+    try:
+        type[variant]
+    except Exception:
+        xexit()
+    if variant == 0:
+        return read_plaintext(bytecodes)
+    elif variant == 1:
+        return utils.read_identifier(bytecodes)
+    elif variant == 2:
+        return utils.read_locator(bytecodes)
 
 
 def read_value_type(bytecodes):

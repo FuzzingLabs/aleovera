@@ -61,6 +61,8 @@ class Literal:
                 res = "false"
             else:
                 res = "true"
+        elif self.type == LiteralType.Address:
+            bytecodes.read_n(32)
         elif self.type == LiteralType.Scalar:
             res = int.from_bytes(bytecodes.read_n(32), "little")
         elif self.type == LiteralType.Field:
@@ -118,7 +120,7 @@ class Operand:
             res = ""
             if self.value:
                 res = self.value[0]
-                if len(self.value) > 1:
+                if len(self.value) > 2:
                     res += f".{self.value[1]}"
             return res
 

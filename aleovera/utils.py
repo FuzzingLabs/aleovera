@@ -75,6 +75,19 @@ def debug_aleo_output():
     print(aleo_output)
 
 
+def interface_name_init():
+    global interface_name
+    interface_name = []
+
+
+def add_interface_name(value):
+    interface_name.append(value)
+
+
+def check_interface_name(value):
+    return value in interface_name
+
+
 def xadd(*args, end="\n"):
     global aleo_output
     tab_str = "    " * tab
@@ -179,7 +192,8 @@ def read_identifier(bytecodes):
 
 
 def read_locator(bytecodes):
-    id = read_identifier(bytecodes)
+    programID = ProgramId(bytecodes)
+    id = programID.fmt()
     resource = read_identifier(bytecodes)
     return [id, resource]
 

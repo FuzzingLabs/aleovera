@@ -13,6 +13,7 @@ class aleodisassembler:
         utils.tab_init()
         utils.aleo_output_init()
         utils.color_init(color)
+        utils.interface_name_init()
         self.bytecodes = bytecodes(bytes)
         self.version = None
         self.program_id = None
