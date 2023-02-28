@@ -1,9 +1,9 @@
+from types import DynamicClassAttribute
 from . import utils
 from enum import Enum
 from .register import register
 from .utils import xexit
 from .valueType import LiteralType
-
 
 class OperandType(Enum):
     Literal = 0
@@ -11,6 +11,10 @@ class OperandType(Enum):
     ProgramID = 2
     Caller = 3
 
+    @DynamicClassAttribute
+    def name(self):
+        """The name of the Enum member."""
+        return self._name_.lower()
 
 class Literal:
     def __init__(self, bytecodes, read_value=False) -> None:
@@ -62,18 +66,15 @@ class Literal:
             else:
                 res = "true"
         elif self.type == LiteralType.Address:
-            bytecodes.read_n(32)
-        elif self.type == LiteralType.Scalar:
-            res = int.from_bytes(bytecodes.read_n(32), "little")
-        elif self.type == LiteralType.Field:
-            res = int.from_bytes(bytecodes.read_n(32), "little")
+            x = bytecodes.read_n(32)
+            res = utils.reverse_address(x)
         return res
 
     def fmt(self):
         res = ""
         if self.has_value:
             res = f"{self.value}"
-        if self.type != LiteralType.Boolean:
+        if self.type != LiteralType.Boolean and self.type != LiteralType.Address:
             res += self.type.name
         return res
 

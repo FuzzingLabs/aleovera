@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from types import DynamicClassAttribute
 from .utils import xexit
 from . import utils
 
@@ -36,6 +37,11 @@ class LiteralType(Enum):
     Scalar = auto()
     # The string type.
     String = auto()
+
+    @DynamicClassAttribute
+    def name(self):
+        """The name of the Enum member."""
+        return self._name_.lower()
 
 
 class attributeType(Enum):

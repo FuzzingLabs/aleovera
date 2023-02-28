@@ -98,6 +98,8 @@ class function:
         if self.finalizes:
             xadd(f"finalize {self.finalizes[0].operands.fmt()};")
             utils.tab -= 1
+            if (utils.tab < 0):
+                utils.tab = 0
             xadd("")
         if len(self.finalizes) != 0:
             for finalize in self.finalizes:
