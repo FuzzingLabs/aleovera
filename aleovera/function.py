@@ -58,7 +58,6 @@ class function:
         new_instruction = instruction()
         new_instruction.disassemble_instruction(bytecodes)
         self.instructions.append(new_instruction)
-        print(new_instruction.fmt())
 
     def read_finalize(self, bytecodes):
         """Read the finalize
@@ -94,11 +93,15 @@ class function:
         if self.finalizes:
             xadd(f"finalize {self.finalizes[0].operands.fmt()};")
             utils.tab -= 1
+            if (utils.tab < 0):
+                utils.tab = 0
             xadd("")
         if len(self.finalizes) != 0:
             for finalize in self.finalizes:
                 finalize.function.fmt()
         utils.tab -= 1
+        if (utils.tab < 0):
+            utils.tab = 0
         xadd("")
 
     def disassemble_function(self, bytecodes):
@@ -108,7 +111,6 @@ class function:
             bytecodes (_type_): _description_
         """
         self.identifier = utils.read_identifier(bytecodes)
-        print(self.identifier)
         ###inputs
         self.number_inputs = self.read_function_number_IOregister(bytecodes)
         for _ in range(self.number_inputs):

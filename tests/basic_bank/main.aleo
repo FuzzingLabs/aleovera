@@ -6,8 +6,9 @@ record Token:
     amount as u64.private;
 
 mapping balances:
-	key left as field.public;
-	value right as u64.public;
+    key left as field.public;
+    value right as u64.public;
+
 closure calculate_interest:
     input r0 as u64;
     input r1 as u64;
@@ -514,7 +515,6 @@ closure calculate_interest:
     ternary r498 r501 r497 into r502;
     output r502 as u64;
 
-
 function issue:
     input r0 as address.private;
     input r1 as u64.private;
@@ -552,4 +552,3 @@ finalize withdraw:
     input r0 as field.public;
     input r1 as u64.public;
     decrement balances[r0] by r1;
-

@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from types import DynamicClassAttribute
 from .register import register
 from . import valueType
 from . import utils
@@ -63,6 +64,11 @@ class Opcode(Enum):
     SubWrapped = auto()
     Ternary = auto()
     Xor = auto()
+
+    @DynamicClassAttribute
+    def name(self):
+        """The name of the Enum member."""
+        return self._name_.lower()
 
 
 UNARY = [
@@ -216,7 +222,7 @@ class instruction:
         ):
             op = self.opcode.name
 
-            if self.opcode.name[-7:] == "Wrapped":
+            if self.opcode.name[-7:] == "wrapped":
                 op = f"{self.opcode.name[:-7]}.w"
 
             elif self.opcode in [Opcode.GreaterThan, Opcode.GreaterThanOrEqual]:
@@ -229,10 +235,10 @@ class instruction:
                 if self.opcode == Opcode.LessThanOrEqual:
                     op += "e"
 
-            elif self.opcode.name[:4] == "Hash":
+            elif self.opcode.name[:4] == "hash":
                 op = f"{self.opcode.name[:4]}.{self.opcode.name[4:]}"
 
-            elif self.opcode.name[:6] == "Commit":
+            elif self.opcode.name[:6] == "commit":
                 op = f"{self.opcode.name[:6]}.{self.opcode.name[6:]}"
 
             elif self.opcode == Opcode.SquareRoot:

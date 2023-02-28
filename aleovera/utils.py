@@ -1,6 +1,7 @@
-import traceback
 import sys
 import os
+from . import bech32_utils
+
 
 # Graphical stuff for the CallFlowGraph's dot
 CALLGRAPH_CONFIG = {
@@ -78,7 +79,7 @@ def debug_aleo_output():
 def xadd(*args, end="\n"):
     global aleo_output
     tab_str = "    " * tab
-    aleo_output = aleo_output + tab_str + "".join(map(str, args)).lower() + end
+    aleo_output = aleo_output + tab_str + "".join(map(str, args)) + end
 
 
 def xprint(*args, end="\n"):
@@ -88,7 +89,7 @@ def xprint(*args, end="\n"):
         end (str, optional): Used in case of multiple print in the same line that does not need a newline. Defaults to "\n".
     """
     tab_str = "    " * tab
-    print(tab_str + "".join(map(str, args)).lower(), end=end)
+    print(tab_str + "".join(map(str, args)), end=end)
 
 
 def xexit(error=""):
@@ -186,3 +187,8 @@ def read_locator(bytecodes):
 
 def read_external(bytecodes):
     return [ProgramId(bytecodes), read_identifier(bytecodes)]
+
+def reverse_address(address):
+    addr_string = bech32_utils.Bech32Encoder.Encode("aleo", address)
+
+    return addr_string
